@@ -1,0 +1,61 @@
+package com.example.farmusfarm.domain.crop.entity;
+
+import com.example.farmusfarm.domain.challenge.entity.Challenge;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@SuperBuilder
+@Entity(name = "diary")
+public class Diary {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "diary_id")
+    private Long id;
+
+    @Column(nullable = false)
+    private String content;
+
+    @Column
+    private boolean isOpen;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crop_id")
+    private Crop crop;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "challenge_id")
+    private Challenge challenge;
+
+    @OneToMany(mappedBy = "diary")
+    @Builder.Default
+    private List<DiaryLike> diaryLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "diary")
+    @Builder.Default
+    private List<DiaryImage> diaryImages = new ArrayList<>();
+
+    public static Diary createDiary(String content, boolean isOpen, Crop crop, Challenge challenge) {
+        return Diary.builder()
+                .content(content)
+                .isOpen(isOpen)
+                .crop(crop)
+                .challenge(challenge)
+                .build();
+    }
+
+    public void addImage(DiaryImage diaryImage) {
+        diaryImages.add(diaryImage);
+    }
+
+    public void addLike(DiaryLike diaryLike) {
+        diaryLikes.add(diaryLike);
+    }
+}
