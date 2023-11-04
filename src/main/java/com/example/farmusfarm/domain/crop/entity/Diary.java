@@ -1,5 +1,6 @@
 package com.example.farmusfarm.domain.crop.entity;
 
+import com.example.farmusfarm.common.BaseEntity;
 import com.example.farmusfarm.domain.challenge.entity.Challenge;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @Entity(name = "diary")
-public class Diary {
+public class Diary extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

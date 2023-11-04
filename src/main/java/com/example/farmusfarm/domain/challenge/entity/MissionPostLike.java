@@ -1,5 +1,6 @@
 package com.example.farmusfarm.domain.challenge.entity;
 
+import com.example.farmusfarm.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @SuperBuilder
 @Entity(name = "mission_post_like")
-public class MissionPostLike {
+public class MissionPostLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

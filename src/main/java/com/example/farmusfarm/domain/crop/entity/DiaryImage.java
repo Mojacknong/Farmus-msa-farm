@@ -1,6 +1,7 @@
 package com.example.farmusfarm.domain.crop.entity;
 
 
+import com.example.farmusfarm.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @SuperBuilder
 @Entity(name = "diary_image")
-public class DiaryImage {
+public class DiaryImage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
