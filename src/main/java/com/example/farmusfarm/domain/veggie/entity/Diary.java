@@ -1,4 +1,4 @@
-package com.example.farmusfarm.domain.crop.entity;
+package com.example.farmusfarm.domain.veggie.entity;
 
 import com.example.farmusfarm.common.BaseEntity;
 import com.example.farmusfarm.domain.challenge.entity.Challenge;
@@ -28,8 +28,8 @@ public class Diary extends BaseEntity {
     private boolean isOpen;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "crop_id")
-    private Crop crop;
+    @JoinColumn(name = "veggie_id")
+    private Veggie veggie;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
@@ -43,11 +43,11 @@ public class Diary extends BaseEntity {
     @Builder.Default
     private List<DiaryImage> diaryImages = new ArrayList<>();
 
-    public static Diary createDiary(String content, boolean isOpen, Crop crop, Challenge challenge) {
+    public static Diary createDiary(String content, boolean isOpen, Veggie veggie, Challenge challenge) {
         return Diary.builder()
                 .content(content)
                 .isOpen(isOpen)
-                .crop(crop)
+                .veggie(veggie)
                 .challenge(challenge)
                 .build();
     }

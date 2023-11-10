@@ -2,7 +2,7 @@ package com.example.farmusfarm.domain.challenge.entity;
 
 
 import com.example.farmusfarm.common.BaseEntity;
-import com.example.farmusfarm.domain.crop.entity.Crop;
+import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -34,14 +34,14 @@ public class Registration extends BaseEntity {
     private List<MissionPost> missionPosts = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "crop_id")
-    private Crop crop;
+    @JoinColumn(name = "veggie_id")
+    private Veggie veggie;
 
-    public static Registration createRegistration(int currentStep, Challenge challenge, Crop crop) {
+    public static Registration createRegistration(int currentStep, Challenge challenge, Veggie veggie) {
         return Registration.builder()
                 .currentStep(currentStep)
                 .challenge(challenge)
-                .crop(crop)
+                .veggie(veggie)
                 .build();
     }
 

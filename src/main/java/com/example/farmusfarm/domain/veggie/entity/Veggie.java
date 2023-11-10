@@ -1,4 +1,4 @@
-package com.example.farmusfarm.domain.crop.entity;
+package com.example.farmusfarm.domain.veggie.entity;
 
 import com.example.farmusfarm.common.BaseEntity;
 import com.example.farmusfarm.domain.challenge.entity.Registration;
@@ -13,43 +13,43 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SuperBuilder
-@Table(indexes = {@Index(name = "crop_user_id_idx", columnList = "user_id")})
-@Entity(name = "crop")
-public class Crop extends BaseEntity {
+@Table(indexes = {@Index(name = "veggie_user_id_idx", columnList = "user_id")})
+@Entity(name = "veggie")
+public class Veggie extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "crop_id")
+    @Column(name = "veggie_id")
     private Long id;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Column(nullable = false)
-    private String cropInfoId;
+    private String veggieInfoId;
 
     @Column(nullable = false)
-    private String cropNickname;
+    private String veggieNickname;
 
     @Column(nullable = false)
     private boolean isPresent;
 
-    @OneToMany(mappedBy = "crop")
+    @OneToMany(mappedBy = "veggie")
     @Builder.Default
     private List<Routine> routines = new ArrayList<>();
 
-    @OneToOne(mappedBy = "crop")
+    @OneToOne(mappedBy = "veggie")
     private Registration registration;
 
-    @OneToMany(mappedBy = "crop")
+    @OneToMany(mappedBy = "veggie")
     @Builder.Default
     private List<Diary> diaries = new ArrayList<>();
 
-    public static Crop createCrop(Long userId, String cropInfoId, String cropNickname, boolean isPresent) {
-        return Crop.builder()
+    public static Veggie createVeggie(Long userId, String cropInfoId, String cropNickname, boolean isPresent) {
+        return Veggie.builder()
                 .userId(userId)
-                .cropInfoId(cropInfoId)
-                .cropNickname(cropNickname)
+                .veggieInfoId(cropInfoId)
+                .veggieNickname(cropNickname)
                 .isPresent(isPresent)
                 .build();
     }

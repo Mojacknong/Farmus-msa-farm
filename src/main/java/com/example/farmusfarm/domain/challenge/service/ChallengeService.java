@@ -11,4 +11,6 @@ import org.springframework.stereotype.Service;
 public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
+
+    //
 }

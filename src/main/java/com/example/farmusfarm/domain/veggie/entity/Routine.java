@@ -1,4 +1,4 @@
-package com.example.farmusfarm.domain.crop.entity;
+package com.example.farmusfarm.domain.veggie.entity;
 
 import com.example.farmusfarm.common.BaseEntity;
 import lombok.AccessLevel;
@@ -8,30 +8,30 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SuperBuilder
-@Entity(name = "diary_like")
-public class DiaryLike extends BaseEntity {
+@Entity(name = "routine")
+public class Routine extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "diary_like_id")
+    @Column(name = "routine_id")
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private Date date;
+
+    @Column(nullable = false)
+    private String content;
+
+    @Column
+    private int period;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id")
-    private Diary diary;
-
-    public static DiaryLike createDiaryLike(Long userId, Diary diary) {
-        return DiaryLike.builder()
-                .userId(userId)
-                .diary(diary)
-                .build();
-    }
+    @JoinColumn(name = "veggie_id")
+    private Veggie veggie;
 }

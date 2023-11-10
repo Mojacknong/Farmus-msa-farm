@@ -1,8 +1,8 @@
-package com.example.farmusfarm.domain.crop.service;
+package com.example.farmusfarm.domain.veggie.service;
 
-import com.example.farmusfarm.domain.crop.repository.DiaryImageRepository;
-import com.example.farmusfarm.domain.crop.repository.DiaryLikeRepository;
-import com.example.farmusfarm.domain.crop.repository.DiaryRepository;
+import com.example.farmusfarm.domain.veggie.repository.DiaryImageRepository;
+import com.example.farmusfarm.domain.veggie.repository.DiaryLikeRepository;
+import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

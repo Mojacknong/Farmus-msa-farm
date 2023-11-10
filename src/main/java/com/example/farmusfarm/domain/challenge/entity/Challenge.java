@@ -1,7 +1,7 @@
 package com.example.farmusfarm.domain.challenge.entity;
 
 import com.example.farmusfarm.common.BaseEntity;
-import com.example.farmusfarm.domain.crop.entity.Diary;
+import com.example.farmusfarm.domain.veggie.entity.Diary;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -22,10 +22,10 @@ public class Challenge extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String cropId;
+    private String veggieInfoId;
 
     @Column(nullable = false)
-    private String cropName;
+    private String veggieName;
 
     @Column(nullable = false)
     private String challengeName;
@@ -55,8 +55,8 @@ public class Challenge extends BaseEntity {
 
     public static Challenge createChallenge(String crop_id, String crop_name, String challenge_name, String description, String image, String difficulty, int max_user) {
         return Challenge.builder()
-                .cropId(crop_id)
-                .cropName(crop_name)
+                .veggieInfoId(crop_id)
+                .veggieName(crop_name)
                 .challengeName(challenge_name)
                 .description(description)
                 .image(image)

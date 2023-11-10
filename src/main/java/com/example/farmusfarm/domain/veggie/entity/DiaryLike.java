@@ -1,5 +1,4 @@
-package com.example.farmusfarm.domain.crop.entity;
-
+package com.example.farmusfarm.domain.veggie.entity;
 
 import com.example.farmusfarm.common.BaseEntity;
 import lombok.AccessLevel;
@@ -14,24 +13,24 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SuperBuilder
-@Entity(name = "diary_image")
-public class DiaryImage extends BaseEntity {
+@Entity(name = "diary_like")
+public class DiaryLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "diary_image_id")
+    @Column(name = "diary_like_id")
     private Long id;
 
     @Column(nullable = false)
-    private String imageUrl;
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
-    public static DiaryImage createDiaryImage(String imageUrl, Diary diary) {
-        return DiaryImage.builder()
-                .imageUrl(imageUrl)
+    public static DiaryLike createDiaryLike(Long userId, Diary diary) {
+        return DiaryLike.builder()
+                .userId(userId)
                 .diary(diary)
                 .build();
     }
