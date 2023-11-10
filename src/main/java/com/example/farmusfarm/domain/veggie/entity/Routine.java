@@ -50,6 +50,10 @@ public class Routine extends BaseEntity {
         return routine;
     }
 
+    public void updatePeriod(int period) {
+        this.period = period;
+    }
+
     public void updateDone() {
         this.isDone = true;
     }

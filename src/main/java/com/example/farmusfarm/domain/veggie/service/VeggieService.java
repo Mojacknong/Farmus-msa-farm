@@ -1,8 +1,13 @@
 package com.example.farmusfarm.domain.veggie.service;
 
+import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateVeggieRequestDto;
+import com.example.farmusfarm.domain.veggie.dto.req.UpdateRoutineRequestDto;
+import com.example.farmusfarm.domain.veggie.dto.res.CreateDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.dto.res.CreateVeggieResponseDto;
 import com.example.farmusfarm.domain.veggie.dto.res.GetTaskListResponseDto;
+import com.example.farmusfarm.domain.veggie.dto.res.UpdateRoutineResponseDto;
+import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Routine;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.RoutineRepository;
@@ -35,6 +40,12 @@ public class VeggieService {
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
+    }
+
+    // 채소 조회
+    public Veggie getVeggie(Long veggieId) {
+        return veggieRepository.findById(veggieId)
+                .orElseThrow(() -> new EntityNotFoundException("채소가 존재하지 않습니다."));
     }
 
     // 채소 삭제
@@ -83,9 +94,20 @@ public class VeggieService {
                 .orElseThrow(() -> new EntityNotFoundException("루틴이 존재하지 않습니다."));
     }
 
-    // 루틴 전체 조회
+    // 채소 별 루틴 전체 조회
     public List<Routine> getRoutines(Long veggieId) {
         return routineRepository.findAllByVeggieId(veggieId);
     }
+
+    // 루틴 수정
+    public UpdateRoutineResponseDto updateRoutine(UpdateRoutineRequestDto requestDto) {
+        Routine routine = getRoutine(requestDto.getRoutineId());
+        routine.updatePeriod(requestDto.getPeriod());
+
+        return UpdateRoutineResponseDto.of(routine.getId());
+    }
+
+
+
 
 }

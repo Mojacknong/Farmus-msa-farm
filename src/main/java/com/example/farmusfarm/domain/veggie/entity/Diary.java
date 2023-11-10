@@ -43,7 +43,14 @@ public class Diary extends BaseEntity {
     @Builder.Default
     private List<DiaryImage> diaryImages = new ArrayList<>();
 
-    public static Diary createDiary(String content, boolean isOpen, Veggie veggie, Challenge challenge) {
+    public static Diary createDiary(String content, Veggie veggie) {
+        return Diary.builder()
+                .content(content)
+                .veggie(veggie)
+                .build();
+    }
+
+    public static Diary createDiaryWithChallenge(String content, boolean isOpen, Veggie veggie, Challenge challenge) {
         return Diary.builder()
                 .content(content)
                 .isOpen(isOpen)
