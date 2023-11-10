@@ -14,7 +14,6 @@ import static com.example.farmusfarm.global.response.SuccessMessage.SUCCESS;
 public class BaseResponseDto<T> {
     private final int code;
     @JsonProperty("isSuccess")
-    private final Boolean isSuccess;
     private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -23,7 +22,6 @@ public class BaseResponseDto<T> {
     // 요청에 성공한 경우
     public BaseResponseDto(T result) {
         this.code = HttpStatus.OK.value();
-        this.isSuccess = SUCCESS.isSuccess();
         this.message = SUCCESS.getMessage();
         this.result = result;
     }
@@ -31,13 +29,11 @@ public class BaseResponseDto<T> {
     // 요청에 실패한 경우
     public BaseResponseDto(ErrorMessage errorMessage) {
         this.code = errorMessage.getCode();
-        this.isSuccess = errorMessage.isSuccess();
         this.message = errorMessage.getMessage();
     }
 
-    public BaseResponseDto(int code, Boolean isSuccess, String errorMessage) {
+    public BaseResponseDto(int code, String errorMessage) {
         this.code = code;
-        this.isSuccess = isSuccess;
         this.message = errorMessage;
     }
 }
