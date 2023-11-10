@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -32,7 +33,7 @@ public class Veggie extends BaseEntity {
     private String veggieNickname;
 
     @Column(nullable = false)
-    private boolean isPresent;
+    private Date birth;
 
     @OneToMany(mappedBy = "veggie")
     @Builder.Default
@@ -45,12 +46,12 @@ public class Veggie extends BaseEntity {
     @Builder.Default
     private List<Diary> diaries = new ArrayList<>();
 
-    public static Veggie createVeggie(Long userId, String cropInfoId, String cropNickname, boolean isPresent) {
+    // 채소 별명, 채소 정보 id, 채소 생일
+    public static Veggie createVeggie(Long userId, String veggieInfoId, String veggieNickname) {
         return Veggie.builder()
                 .userId(userId)
-                .veggieInfoId(cropInfoId)
-                .veggieNickname(cropNickname)
-                .isPresent(isPresent)
+                .veggieInfoId(veggieInfoId)
+                .veggieNickname(veggieNickname)
                 .build();
     }
 
