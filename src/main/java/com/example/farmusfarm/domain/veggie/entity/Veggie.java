@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Veggie extends BaseEntity {
     private String veggieNickname;
 
     @Column(nullable = false)
-    private Date birth;
+    private LocalDate birth;
 
     @OneToMany(mappedBy = "veggie")
     @Builder.Default
@@ -47,12 +48,29 @@ public class Veggie extends BaseEntity {
     private List<Diary> diaries = new ArrayList<>();
 
     // 채소 별명, 채소 정보 id, 채소 생일
-    public static Veggie createVeggie(Long userId, String veggieInfoId, String veggieNickname) {
+    public static Veggie createVeggie(Long userId, String veggieInfoId, String veggieNickname, String birth) {
         return Veggie.builder()
                 .userId(userId)
                 .veggieInfoId(veggieInfoId)
                 .veggieNickname(veggieNickname)
+                .birth(LocalDate.parse(birth))
                 .build();
+    }
+
+    // 채소 수정
+    public void updateVeggie(String nickname, String birth) {
+        this.veggieNickname = nickname;
+        this.birth = LocalDate.parse(birth);
+    }
+
+    // 팜클럽 등록
+    public void register(Registration registration) {
+        this.registration = registration;
+    }
+
+    // 팜클럽 삭제
+    public void unregister() {
+        this.registration = null;
     }
 
     public void addRoutine(Routine routine) {

@@ -1,12 +1,12 @@
 package com.example.farmusfarm.domain.veggie.service;
 
+import com.example.farmusfarm.common.Utils;
+import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateVeggieRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.req.UpdateRoutineRequestDto;
-import com.example.farmusfarm.domain.veggie.dto.res.CreateDiaryResponseDto;
-import com.example.farmusfarm.domain.veggie.dto.res.CreateVeggieResponseDto;
-import com.example.farmusfarm.domain.veggie.dto.res.GetTaskListResponseDto;
-import com.example.farmusfarm.domain.veggie.dto.res.UpdateRoutineResponseDto;
+import com.example.farmusfarm.domain.veggie.dto.req.UpdateVeggieRequestDto;
+import com.example.farmusfarm.domain.veggie.dto.res.*;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Routine;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,12 +32,13 @@ public class VeggieService {
 
     private final VeggieRepository veggieRepository;
     private final RoutineRepository routineRepository;
+    private final RegistrationRepository registrationRepository;
 
     // 내 채소 추가
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
         // 채소 존재 여부 확인 -> OpenFeign
         // 채소 생성
-        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getNickname(), requestDto.getVeggieInfoId());
+        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getNickname(), requestDto.getVeggieInfoId(), requestDto.getBirth());
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
@@ -48,14 +50,37 @@ public class VeggieService {
                 .orElseThrow(() -> new EntityNotFoundException("채소가 존재하지 않습니다."));
     }
 
+    // 채소 수정
+    public UpdateVeggieResponseDto updateVeggie(UpdateVeggieRequestDto requestDto) {
+        Veggie veggie = getVeggie(requestDto.getVeggieId());
+        int age = Utils.compareLocalDate(veggie.getBirth(), LocalDate.now());
+
+        veggie.updateVeggie(requestDto.getNickname(), requestDto.getBirth());
+
+        return UpdateVeggieResponseDto.of(veggie.getId(), veggie.getVeggieNickname(), age);
+    }
+
     // 채소 삭제
     public void deleteVeggie(Long veggieId) {
+        Veggie veggie = getVeggie(veggieId);
+
+        // 팜클럽에 참여중 일 경우
+        if (getVeggie(veggieId).getRegistration() != null) {
+            unregister(veggie);
+        }
+
         veggieRepository.deleteById(veggieId);
     }
 
     // 유저 별 모든 채소 id 조회
     public List<Long> getVeggieIds(Long userId) {
         return veggieRepository.findAllVeggiesIdByUserId(userId);
+    }
+
+    // 팜클럽 등록 정보 삭제
+    public void unregister(Veggie veggie) {
+        registrationRepository.deleteById(veggie.getRegistration().getId());
+        veggie.unregister();
     }
 
     // 유저 별 모든 현재 미션 조회

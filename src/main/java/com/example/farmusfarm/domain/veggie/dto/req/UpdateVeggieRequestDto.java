@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CreateVeggieRequestDto {
+public class UpdateVeggieRequestDto {
 
+    private Long veggieId;
     private String nickname;
-    private String veggieInfoId;
     private String birth;
 }
