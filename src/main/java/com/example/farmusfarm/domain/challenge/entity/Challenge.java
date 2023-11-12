@@ -53,15 +53,15 @@ public class Challenge extends BaseEntity {
     @Builder.Default
     private List<Diary> diaries = new ArrayList<>();
 
-    public static Challenge createChallenge(String crop_id, String crop_name, String challenge_name, String description, String image, String difficulty, int max_user) {
+    public static Challenge createChallenge(String veggieInfoId, String veggieName, String difficulty, String image, String challengeName, int maxUser, String description) {
         return Challenge.builder()
-                .veggieInfoId(crop_id)
-                .veggieName(crop_name)
-                .challengeName(challenge_name)
-                .description(description)
+                .veggieInfoId(veggieInfoId)
+                .veggieName(veggieName)
                 .image(image)
+                .challengeName(challengeName)
+                .description(description)
                 .difficulty(difficulty)
-                .maxUser(max_user)
+                .maxUser(maxUser)
                 .build();
     }
 

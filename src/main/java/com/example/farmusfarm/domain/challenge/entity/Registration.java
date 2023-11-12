@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SuperBuilder
+@Table(indexes = {@Index(name = "registration_user_id_idx", columnList = "user_id")})
 @Entity(name = "registration")
 public class Registration extends BaseEntity {
 
@@ -21,6 +22,9 @@ public class Registration extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "registration_id")
     private Long id;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(nullable = false)
     private int currentStep;
