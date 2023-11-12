@@ -15,6 +15,7 @@ public class CreateChallengeRequestDto {
     private String image;
 
     private String challengeName;
+    private int maxStep;
     private int maxUser;
     private String description;
 }

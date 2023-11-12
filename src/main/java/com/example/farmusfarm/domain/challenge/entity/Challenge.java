@@ -40,6 +40,9 @@ public class Challenge extends BaseEntity {
     private String difficulty;
 
     @Column(nullable = false)
+    private int maxStep;
+
+    @Column(nullable = false)
     private int maxUser;
 
     @Column
@@ -53,7 +56,7 @@ public class Challenge extends BaseEntity {
     @Builder.Default
     private List<Diary> diaries = new ArrayList<>();
 
-    public static Challenge createChallenge(String veggieInfoId, String veggieName, String difficulty, String image, String challengeName, int maxUser, String description) {
+    public static Challenge createChallenge(String veggieInfoId, String veggieName, String difficulty, String image, String challengeName, int maxStep, int maxUser, String description) {
         return Challenge.builder()
                 .veggieInfoId(veggieInfoId)
                 .veggieName(veggieName)
@@ -61,6 +64,7 @@ public class Challenge extends BaseEntity {
                 .challengeName(challengeName)
                 .description(description)
                 .difficulty(difficulty)
+                .maxStep(maxStep)
                 .maxUser(maxUser)
                 .build();
     }
