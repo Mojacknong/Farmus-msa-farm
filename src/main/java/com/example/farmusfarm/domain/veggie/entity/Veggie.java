@@ -63,12 +63,12 @@ public class Veggie extends BaseEntity {
         this.birth = LocalDate.parse(birth);
     }
 
-    // 팜클럽 등록
+    // 챌린지 등록
     public void register(Registration registration) {
         this.registration = registration;
     }
 
-    // 팜클럽 삭제
+    // 챌린지 삭제
     public void unregister() {
         this.registration = null;
     }

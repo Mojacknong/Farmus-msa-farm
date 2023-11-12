@@ -45,4 +45,6 @@ public class ChallengeService {
         return challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new IllegalArgumentException("챌린지가 존재하지 않습니다."));
     }
+
+    //
 }
