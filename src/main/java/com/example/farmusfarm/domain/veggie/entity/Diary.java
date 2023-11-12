@@ -46,6 +46,7 @@ public class Diary extends BaseEntity {
     public static Diary createDiary(String content, Veggie veggie) {
         return Diary.builder()
                 .content(content)
+                .isOpen(false)
                 .veggie(veggie)
                 .build();
     }
