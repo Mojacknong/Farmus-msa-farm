@@ -4,6 +4,7 @@ import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateChallengeRequestDto;
 import com.example.farmusfarm.domain.challenge.dto.res.*;
 import com.example.farmusfarm.domain.challenge.entity.Challenge;
+import com.example.farmusfarm.domain.challenge.entity.MissionPost;
 import com.example.farmusfarm.domain.challenge.entity.Registration;
 import com.example.farmusfarm.domain.challenge.repository.ChallengeRepository;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
@@ -181,6 +182,14 @@ public class ChallengeService {
     public GetChallengeInfoResponse getMyChallengeInfo(Long userId, Long challengeId) {
         Challenge challenge = getChallenge(challengeId);
         Registration registration = getUserRegistration(userId, challengeId);
+        List<String> imageList = new ArrayList<String>();
+        challenge.getRegistrations().forEach(r -> {
+                    for (MissionPost p : r.getMissionPosts()) {
+                        if (p.getStep() == registration.getCurrentStep()) {
+                            imageList.add(p.getMissionPostImages().get(0).getImageUrl());
+                        }
+                    }
+                });
 
         // veggieInfoId로 스텝이랑 도움말 정보 가져오기
 
@@ -194,9 +203,9 @@ public class ChallengeService {
                 challenge.getRegistrations().size(),
                 Utils.compareLocalDate(LocalDate.parse(challenge.getStartedAt()), LocalDate.now()),
                 getChallengeAchievement(challengeId, challenge.getMaxStep()),
+                registration.getCurrentStepName(),
                 "",
-                "",
-                new ArrayList<String>(),
+                imageList,
                 getDiaryListByChallenge(challengeId)
         );
     }
