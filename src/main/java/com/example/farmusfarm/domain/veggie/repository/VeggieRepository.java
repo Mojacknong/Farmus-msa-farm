@@ -11,4 +11,6 @@ public interface VeggieRepository extends JpaRepository<Veggie, Long> {
     // 유저 별 채소 id 전체 조회
     @Query("select v.id from veggie v where v.userId = :userId")
     List<Long> findAllVeggiesIdByUserId(Long userId);
+
+    List<Veggie> findAllByUserId(Long userId);
 }

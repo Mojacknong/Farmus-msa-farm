@@ -77,6 +77,11 @@ public class VeggieService {
         return veggieRepository.findAllVeggiesIdByUserId(userId);
     }
 
+    // 유저 별 모든 채소 정보 조회 (홈)
+    public List<Veggie> getVeggieList(Long userId) {
+        return veggieRepository.findAllByUserId(userId);
+    }
+
     // 팜클럽 등록 정보 삭제
     public void unregister(Veggie veggie) {
         registrationRepository.deleteById(veggie.getRegistration().getId());
