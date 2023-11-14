@@ -14,4 +14,6 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     @Query("select c from challenge c where c.difficulty in :difficulty")
     List<Challenge> findAllByDifficultyIsIn(List<String> difficulty);
+
+    List<Challenge> findAllByDifficultyIs(String difficulty);
 }

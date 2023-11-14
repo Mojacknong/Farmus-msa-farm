@@ -96,8 +96,31 @@ public class ChallengeService {
             challengeList = challengeRepository.findAllByDifficultyIsInAndStartedAtExists(difficulties, status.equals("준비 중"));
         }
 
+        return streamChallengeListToSearchResult(challengeList);
+    }
+
+    // 추천 챌린지 조회
+    public List<SearchChallengeResponseDto> getRecommendedChallengeList(Long userId) {
+        // 유저 별 추천 난이도 조회
+        String difficulty = "Hard";
+
+        return getChallengeListByDifficulty(difficulty);
+    }
+
+    // 난이도 별 챌린지 조회
+    public List<SearchChallengeResponseDto> getChallengeListByDifficulty(String difficulty) {
+        List<Challenge> challengeList = challengeRepository.findAllByDifficultyIs(difficulty);
+
+        return streamChallengeListToSearchResult(challengeList);
+    }
+
+    private String getStatusMessage(String statedAt) {
+        return statedAt == null ? "준비 중" : "시작한 지 " + Utils.compareLocalDate(LocalDate.parse(statedAt), LocalDate.now()) + "일째";
+    }
+
+    private List<SearchChallengeResponseDto> streamChallengeListToSearchResult(List<Challenge> challengeList) {
         return challengeList.stream().map(c -> {
-            String cStatus = c.getStartedAt() == null ? "준비 중" : "시작한 지 " + Utils.compareLocalDate(LocalDate.parse(c.getStartedAt()), LocalDate.now()) + "일째";
+            String cStatus = getStatusMessage(c.getStartedAt());
 
             return SearchChallengeResponseDto.of(
                     c.getId(),
