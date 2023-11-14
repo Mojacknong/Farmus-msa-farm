@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @Getter
-public class GetMyChallengeListDto {
-
-    private Long challengeId;
-    private String image;
+public class LikeMissionPostResponseDto {
+    
+    private Long likeId;
 }

@@ -2,16 +2,16 @@ package com.example.farmusfarm.domain.challenge.service;
 
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateChallengeRequestDto;
-import com.example.farmusfarm.domain.challenge.dto.res.CreateChallengeResponseDto;
-import com.example.farmusfarm.domain.challenge.dto.res.GetChallengeInfoResponse;
-import com.example.farmusfarm.domain.challenge.dto.res.GetMyChallengeListDto;
+import com.example.farmusfarm.domain.challenge.dto.res.*;
 import com.example.farmusfarm.domain.challenge.entity.Challenge;
 import com.example.farmusfarm.domain.challenge.entity.Registration;
 import com.example.farmusfarm.domain.challenge.repository.ChallengeRepository;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
 import com.example.farmusfarm.domain.veggie.dto.res.GetDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
+import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
+import com.example.farmusfarm.domain.veggie.repository.VeggieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,7 @@ public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final RegistrationRepository registrationRepository;
     private final DiaryRepository diaryRepository;
+    private final VeggieRepository veggieRepository;
 
     // 챌린지 생성
     public CreateChallengeResponseDto createChallenge(Long veggieId, CreateChallengeRequestDto requestDto) {
@@ -40,6 +41,30 @@ public class ChallengeService {
         return CreateChallengeResponseDto.of(savedChallenge.getId());
     }
 
+    // 챌린지 참여
+    public CreateRegistrationResponseDto createRegistration(Long veggieId, Long challengeId) {
+        Challenge challenge = getChallenge(challengeId);
+        Veggie veggie = getVeggie(veggieId);
+
+        validateRegistration(veggieId, challengeId);
+        // 첫 미션 명 불러오기
+        String mission = "";
+
+        Registration registration = Registration.createRegistration(mission, challenge, veggie);
+        Registration savedRegistration = registrationRepository.save(registration);
+
+        return CreateRegistrationResponseDto.of(savedRegistration.getId());
+    }
+
+    // 챌린지 종료
+    public DeleteRegistrationResponseDto deleteRegistration(Long veggieId, Long challengeId) {
+        Registration registration = getVeggieRegistration(veggieId, challengeId);
+
+        registrationRepository.delete(registration);
+
+        return DeleteRegistrationResponseDto.of(registration.getId());
+    }
+
     // 유저 별 전체 챌린지 조회
     public List<Registration> getUserRegistrationList(Long userId) {
         return registrationRepository.findAllByUserId(userId);
@@ -48,6 +73,11 @@ public class ChallengeService {
     // 유저 별 등록 정보 조회
     public Registration getUserRegistration(Long userId, Long challengeId) {
         return registrationRepository.findByUserIdAndChallengeId(userId, challengeId)
+                .orElseThrow(() -> new IllegalArgumentException("등록 정보가 존재하지 않습니다."));
+    }
+
+    public Registration getVeggieRegistration(Long veggieId, Long challengeId) {
+        return registrationRepository.findByVeggieIdAndChallengeId(veggieId, challengeId)
                 .orElseThrow(() -> new IllegalArgumentException("등록 정보가 존재하지 않습니다."));
     }
 
@@ -68,13 +98,13 @@ public class ChallengeService {
     }
 
     // 챌린지 별 일기 객체 조회
-    public List<Diary> getAllDiaryListByChallenge(Long challengeId) {
+    public List<Diary> getAllDiaryEntitiesByChallenge(Long challengeId) {
         return diaryRepository.findAllByChallengeId(challengeId);
     }
 
     // 챌린지 일기 전체 조회
     public List<GetDiaryResponseDto> getDiaryListByChallenge(Long challengeId) {
-        List<Diary> diaryList = getAllDiaryListByChallenge(challengeId);
+        List<Diary> diaryList = getAllDiaryEntitiesByChallenge(challengeId);
 
         // 유저 정보를 가져옴 (이미지, 닉네임)
 
@@ -144,5 +174,23 @@ public class ChallengeService {
                 new ArrayList<String>(),
                 null
         );
+    }
+
+    // 채소 조회
+    public Veggie getVeggie(Long veggieId) {
+        return veggieRepository.findById(veggieId)
+                .orElseThrow(() -> new IllegalArgumentException("채소가 존재하지 않습니다."));
+    }
+
+    public void validateRegistration(Long userId, Long challengeId) {
+        // 챌린지 참여 인원수 체크
+        if (registrationRepository.findAllByChallengeId(challengeId).size() >= getChallenge(challengeId).getMaxUser()) {
+            throw new IllegalArgumentException("챌린지 인원이 초과되었습니다.");
+        }
+
+        // 이미 참여한 챌린지인지 체크
+        if (registrationRepository.findByUserIdAndChallengeId(userId, challengeId).isPresent()) {
+            throw new IllegalArgumentException("이미 참여한 챌린지입니다.");
+        }
     }
 }
