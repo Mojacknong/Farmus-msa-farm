@@ -86,6 +86,32 @@ public class ChallengeService {
         return registrationRepository.findAllChallengeIdAndImageByUserId(userId);
     }
 
+    // 전체 챌린지 목록 검색
+    public List<SearchChallengeResponseDto> searchChallengeList(List<String> difficulties, String status) {
+        List<Challenge> challengeList;
+
+        if (status.equals("All")) {
+            challengeList = challengeRepository.findAllByDifficultyIsIn(difficulties);
+        } else {
+            challengeList = challengeRepository.findAllByDifficultyIsInAndStartedAtExists(difficulties, status.equals("준비 중"));
+        }
+
+        return challengeList.stream().map(c -> {
+            String cStatus = c.getStartedAt() == null ? "준비 중" : "시작한 지 " + Utils.compareLocalDate(LocalDate.parse(c.getStartedAt()), LocalDate.now()) + "일째";
+
+            return SearchChallengeResponseDto.of(
+                    c.getId(),
+                    c.getVeggieName(),
+                    c.getChallengeName(),
+                    c.getImage(),
+                    c.getDifficulty(),
+                    c.getMaxUser(),
+                    c.getRegistrations().size(),
+                    cStatus
+            );
+        }).collect(Collectors.toList());
+    }
+
     // 챌린지 조회
     public Challenge getChallenge(Long challengeId) {
         return challengeRepository.findById(challengeId)
@@ -149,7 +175,6 @@ public class ChallengeService {
                 "",
                 new ArrayList<String>(),
                 getDiaryListByChallenge(challengeId)
-
         );
     }
 

@@ -46,7 +46,7 @@ public class Challenge extends BaseEntity {
     private int maxUser;
 
     @Column
-    private String startedAt;
+    private String startedAt = null;
 
     @OneToMany(mappedBy = "challenge")
     @Builder.Default
