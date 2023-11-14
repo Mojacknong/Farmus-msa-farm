@@ -3,6 +3,7 @@ package com.example.farmusfarm.domain.veggie.service;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.res.CreateDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
+import com.example.farmusfarm.domain.veggie.entity.DiaryLike;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.DiaryImageRepository;
 import com.example.farmusfarm.domain.veggie.repository.DiaryLikeRepository;
@@ -25,8 +26,8 @@ public class DiaryService {
     private final VeggieRepository veggieRepository;
 
     // 일기 생성
-    public CreateDiaryResponseDto createDiary(Long veggieId, CreateDiaryRequestDto requestDto) {
-        Veggie veggie = veggieRepository.findById(veggieId)
+    public CreateDiaryResponseDto createDiary(CreateDiaryRequestDto requestDto) {
+        Veggie veggie = veggieRepository.findById(requestDto.getVeggieId())
                 .orElseThrow(()-> new IllegalArgumentException("채소가 존재하지 않습니다."));
 
         Diary diary;
@@ -57,5 +58,11 @@ public class DiaryService {
     // 일기 삭제
     public void deleteDiary(Long diaryId) {
         diaryRepository.deleteById(diaryId);
+    }
+
+    public DiaryLike createLike(Long diaryId, Long userId) {
+        Diary diary = getDiary(diaryId);
+        DiaryLike diaryLike = DiaryLike.createDiaryLike(userId, diary);
+        return diaryLikeRepository.save(diaryLike);
     }
 }

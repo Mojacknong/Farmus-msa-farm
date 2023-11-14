@@ -29,9 +29,12 @@ public class DiaryLike extends BaseEntity {
     private Diary diary;
 
     public static DiaryLike createDiaryLike(Long userId, Diary diary) {
-        return DiaryLike.builder()
+        DiaryLike like = DiaryLike.builder()
                 .userId(userId)
                 .diary(diary)
                 .build();
+
+        diary.addLike(like);
+        return like;
     }
 }
