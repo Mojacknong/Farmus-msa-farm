@@ -16,7 +16,7 @@ import java.util.List;
 @SuperBuilder
 @Table(indexes = {@Index(name = "registration_user_id_idx", columnList = "user_id")})
 @Entity(name = "registration")
-public class Registration extends BaseEntity {
+public class    Registration extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,9 @@ public class Registration extends BaseEntity {
 
     @Column(nullable = false)
     private int currentStep;
+
+    @Column(nullable = false)
+    private String currentStepName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
@@ -41,19 +44,25 @@ public class Registration extends BaseEntity {
     @JoinColumn(name = "veggie_id")
     private Veggie veggie;
 
-    public static Registration createRegistration(int currentStep, Challenge challenge, Veggie veggie) {
-        return Registration.builder()
-                .currentStep(currentStep)
+    public static Registration createRegistration(String currentStepName, Challenge challenge, Veggie veggie) {
+        Registration newRegistration = Registration.builder()
+                .currentStep(0)
+                .currentStepName(currentStepName)
                 .challenge(challenge)
                 .veggie(veggie)
                 .build();
+
+        challenge.addRegistration(newRegistration);
+        veggie.register(newRegistration);
+        return newRegistration;
     }
 
     public void addMissionPost(MissionPost missionPost) {
         missionPosts.add(missionPost);
     }
 
-    public void updateCurrentStep(int currentStep) {
+    public void updateCurrentStep(int currentStep, String currentStepName) {
         this.currentStep = currentStep;
+        this.currentStepName = currentStepName;
     }
 }
