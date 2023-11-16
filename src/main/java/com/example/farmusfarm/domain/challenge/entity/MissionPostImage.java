@@ -29,9 +29,12 @@ public class MissionPostImage extends BaseEntity {
     private MissionPost missionPost;
 
     public static MissionPostImage createMissionPostImage(String imageUrl, MissionPost missionPost) {
-        return MissionPostImage.builder()
+         MissionPostImage newImage = MissionPostImage.builder()
                 .imageUrl(imageUrl)
                 .missionPost(missionPost)
-                .build();
+                 .build();
+
+         missionPost.addImage(newImage);
+         return newImage;
     }
 }

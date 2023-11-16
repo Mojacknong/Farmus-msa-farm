@@ -29,9 +29,12 @@ public class MissionPostLike extends BaseEntity {
     private Long userId;
 
     public static MissionPostLike createMissionPostLike(MissionPost missionPost, Long userId) {
-        return MissionPostLike.builder()
+        MissionPostLike like = MissionPostLike.builder()
                 .missionPost(missionPost)
                 .userId(userId)
                 .build();
+
+        missionPost.addLike(like);
+        return like;
     }
 }

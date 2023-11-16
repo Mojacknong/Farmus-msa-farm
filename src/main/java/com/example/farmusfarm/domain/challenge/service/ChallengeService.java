@@ -13,6 +13,7 @@ import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
 import com.example.farmusfarm.domain.veggie.repository.VeggieRepository;
+import com.example.farmusfarm.domain.veggieInfo.dto.res.VeggieInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,17 +34,24 @@ public class ChallengeService {
     private final VeggieRepository veggieRepository;
 
     // 챌린지 생성
-    public CreateChallengeResponseDto createChallenge(Long veggieId, CreateChallengeRequestDto requestDto) {
+    public CreateChallengeResponseDto createChallenge(Long userId, CreateChallengeRequestDto requestDto) {
+
+        // 채소 정보 가져오기
+        VeggieInfoResponseDto veggieInfo = new VeggieInfoResponseDto();
 
         // 챌린지 생성
-        Challenge newChallenge = Challenge.createChallenge(requestDto.getVeggieInfoId(), requestDto.getVeggieName(), requestDto.getDifficulty(), requestDto.getImage(), requestDto.getChallengeName(), requestDto.getMaxStep(), requestDto.getMaxUser(), requestDto.getDescription());
+        Challenge newChallenge = Challenge.createChallenge(
+                requestDto.getVeggieInfoId(), veggieInfo.getVeggieName(), veggieInfo.getDifficulty(), veggieInfo.getImageUrl(),
+                veggieInfo.getGrayImageUrl(), requestDto.getChallengeName(), veggieInfo.getStepNum(), requestDto.getMaxUser(), requestDto.getDescription());
         Challenge savedChallenge = challengeRepository.save(newChallenge);
+
+        createRegistration(userId, requestDto.getMyVeggieId(), savedChallenge.getId());
 
         return CreateChallengeResponseDto.of(savedChallenge.getId());
     }
 
     // 챌린지 참여
-    public CreateRegistrationResponseDto createRegistration(Long veggieId, Long challengeId) {
+    public CreateRegistrationResponseDto createRegistration(Long userId, Long veggieId, Long challengeId) {
         Challenge challenge = getChallenge(challengeId);
         Veggie veggie = getVeggie(veggieId);
 
@@ -51,7 +59,7 @@ public class ChallengeService {
         // 첫 미션 명 불러오기
         String mission = "";
 
-        Registration registration = Registration.createRegistration(mission, challenge, veggie);
+        Registration registration = Registration.createRegistration(userId, mission, challenge, veggie);
         Registration savedRegistration = registrationRepository.save(registration);
 
         return CreateRegistrationResponseDto.of(savedRegistration.getId());

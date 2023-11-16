@@ -41,8 +41,8 @@ public class VeggieController {
 
     @PostMapping("/diary")
     public BaseResponseDto<?> createDiary(
-            @RequestPart final CreateDiaryRequestDto requestDto,
-            @RequestPart final MultipartFile image
+            @RequestPart("content") final CreateDiaryRequestDto requestDto,
+            @RequestPart("image") final MultipartFile image
             ) {
         return BaseResponseDto.of(SuccessMessage.CREATED, diaryService.createDiary(requestDto, image));
     }

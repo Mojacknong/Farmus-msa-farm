@@ -44,8 +44,9 @@ public class    Registration extends BaseEntity {
     @JoinColumn(name = "veggie_id")
     private Veggie veggie;
 
-    public static Registration createRegistration(String currentStepName, Challenge challenge, Veggie veggie) {
+    public static Registration createRegistration(Long userId, String currentStepName, Challenge challenge, Veggie veggie) {
         Registration newRegistration = Registration.builder()
+                .userId(userId)
                 .currentStep(0)
                 .currentStepName(currentStepName)
                 .challenge(challenge)
@@ -61,8 +62,8 @@ public class    Registration extends BaseEntity {
         missionPosts.add(missionPost);
     }
 
-    public void updateCurrentStep(int currentStep, String currentStepName) {
-        this.currentStep = currentStep;
-        this.currentStepName = currentStepName;
+    public void updateCurrentStep(String nextStepName) {
+        this.currentStep = currentStep + 1;
+        this.currentStepName = nextStepName;
     }
 }
