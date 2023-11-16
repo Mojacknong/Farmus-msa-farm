@@ -47,6 +47,8 @@ public class VeggieController {
         return BaseResponseDto.of(SuccessMessage.CREATED, diaryService.createDiary(requestDto, image));
     }
 
+
+
     @GetMapping("/{veggieId}")
     public BaseResponseDto<?> getVeggie(
             @PathVariable Long veggieId
@@ -89,5 +91,19 @@ public class VeggieController {
             @RequestBody CheckRoutineRequestDto requestDto
     ) {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.checkRoutine(requestDto));
+    }
+
+    @PatchMapping("")
+    public BaseResponseDto<?> updateVeggie(
+            @RequestBody UpdateVeggieRequestDto requestDto
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.updateVeggie(requestDto));
+    }
+
+    @GetMapping("/diary/{veggieId}")
+    public BaseResponseDto<?> getVeggieDiaryList(
+            @PathVariable Long veggieId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, diaryService.getVeggieDiaryList(veggieId));
     }
 }

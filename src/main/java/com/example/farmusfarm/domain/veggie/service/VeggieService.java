@@ -122,7 +122,7 @@ public class VeggieService {
     // 채소 수정
     public UpdateVeggieResponseDto updateVeggie(UpdateVeggieRequestDto requestDto) {
         Veggie veggie = getVeggie(requestDto.getVeggieId());
-        int age = Utils.compareLocalDate(veggie.getBirth(), LocalDate.now());
+        int age = Utils.compareLocalDate(LocalDate.now(), veggie.getBirth());
 
         veggie.updateVeggie(requestDto.getNickname(), requestDto.getBirth());
 
