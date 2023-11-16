@@ -12,5 +12,6 @@ import java.util.List;
 public class GetDayRoutinesResponseDto {
 
     private String veggieNickname;
+    private String color;
     private List<GetDayRoutinesDto> routineList;
 }

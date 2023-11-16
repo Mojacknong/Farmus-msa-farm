@@ -37,6 +37,9 @@ public class Veggie extends BaseEntity {
     private String veggieImage;
 
     @Column(nullable = false)
+    private String color;
+
+    @Column(nullable = false)
     private LocalDate birth;
 
     @OneToMany(mappedBy = "veggie")
@@ -51,13 +54,14 @@ public class Veggie extends BaseEntity {
     private List<Diary> diaries = new ArrayList<>();
 
     // 채소 별명, 채소 정보 id, 채소 생일
-    public static Veggie createVeggie(Long userId, String veggieInfoId, String veggieNickname, String veggieImage, String birth) {
+    public static Veggie createVeggie(Long userId, String veggieInfoId, String veggieNickname, String veggieImage, String birth, String color) {
         return Veggie.builder()
                 .userId(userId)
                 .veggieInfoId(veggieInfoId)
                 .veggieNickname(veggieNickname)
                 .veggieImage(veggieImage)
                 .birth(LocalDate.parse(birth))
+                .color(color)
                 .build();
     }
 

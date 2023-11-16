@@ -13,4 +13,5 @@ public class GetCurrentMissionDto {
     private String veggieNickname;
     private int stepNum;
     private String stepName;
+    private String color;
 }

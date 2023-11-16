@@ -1,5 +1,6 @@
 package com.example.farmusfarm.domain.veggie.service;
 
+import com.example.farmusfarm.common.Colors;
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
 import com.example.farmusfarm.domain.veggie.dto.req.*;
@@ -35,7 +36,7 @@ public class VeggieService {
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
         // 채소 존재 여부 확인 -> OpenFeign
         // 채소 생성
-        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getVeggieInfoId(), requestDto.getNickname(), requestDto.getVeggieImage(), requestDto.getBirth());
+        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getVeggieInfoId(), requestDto.getNickname(), requestDto.getVeggieImage(), requestDto.getBirth(), getRandomColorCode());
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
@@ -82,7 +83,8 @@ public class VeggieService {
                         v.getRegistration().getChallenge().getId(),
                         v.getVeggieNickname(),
                         v.getRegistration().getCurrentStep(),
-                        v.getRegistration().getCurrentStepName()))
+                        v.getRegistration().getCurrentStepName(),
+                        v.getColor()))
                 .collect(Collectors.toList());
     }
 
@@ -168,7 +170,7 @@ public class VeggieService {
                 .map(r -> GetDayRoutinesDto.of(r.getId(), r.getContent(), r.getPeriod(), r.getIsDone()))
                 .collect(Collectors.toList());
 
-        return GetDayRoutinesResponseDto.of(veggie.getVeggieNickname(), result);
+        return GetDayRoutinesResponseDto.of(veggie.getVeggieNickname(), veggie.getColor(),result);
     }
 
     // 루틴 수정
@@ -177,5 +179,10 @@ public class VeggieService {
         routine.updatePeriod(requestDto.getPeriod());
 
         return UpdateRoutineResponseDto.of(routine.getId());
+    }
+
+    public String getRandomColorCode() {
+        int random = (int) (Math.random() * 3);
+        return Colors.values()[random].getHexCode();
     }
 }
