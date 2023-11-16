@@ -3,6 +3,7 @@ package com.example.farmusfarm.domain.veggie.service;
 import com.example.farmusfarm.common.S3Service;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.res.CreateDiaryResponseDto;
+import com.example.farmusfarm.domain.veggie.dto.res.GetMyDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.DiaryImage;
 import com.example.farmusfarm.domain.veggie.entity.DiaryLike;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +49,14 @@ public class DiaryService {
         createDiaryImage(newDiary, image);
 
         return CreateDiaryResponseDto.of(newDiary.getId());
+    }
+
+    // 작물 별 일기 목록 조회
+    public List<GetMyDiaryResponseDto> getVeggieDiaryList(Long veggieId) {
+        List<Diary> diaries = getDiaryByVeggieId(veggieId);
+        return diaries.stream()
+                .map(diary -> GetMyDiaryResponseDto.of(diary.getId(), diary.getContent(), diary.getDiaryImages().get(0).getImageUrl()))
+                .collect(Collectors.toList());
     }
 
     // 일기 조회
