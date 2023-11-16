@@ -34,7 +34,7 @@ public class Challenge extends BaseEntity {
     private String description;
 
     @Column(nullable = false)
-    private String image;
+    private String imageUrl;
 
     @Column(nullable = false)
     private String grayImage;
@@ -63,7 +63,7 @@ public class Challenge extends BaseEntity {
         return Challenge.builder()
                 .veggieInfoId(veggieInfoId)
                 .veggieName(veggieName)
-                .image(image)
+                .imageUrl(image)
                 .grayImage(grayImage)
                 .challengeName(challengeName)
                 .description(description)

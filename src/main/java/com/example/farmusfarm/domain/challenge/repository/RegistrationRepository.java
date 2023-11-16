@@ -13,7 +13,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     List<Registration> findAllByUserId(Long userId);
 
     // 챌린지 id랑 챌린지 image의 리스트 조회
-    @Query("select new com.example.farmusfarm.domain.challenge.dto.res.GetMyChallengeListDto(r.challenge.id, r.challenge.image) from registration r where r.userId = :userId")
+    @Query("select new com.example.farmusfarm.domain.challenge.dto.res.GetMyChallengeListDto(r.challenge.id, r.challenge.imageUrl) from registration r where r.userId = :userId")
     List<GetMyChallengeListDto> findAllChallengeIdAndImageByUserId(Long userId);
 
     List<Registration> findAllByChallengeId(Long challengeId);
