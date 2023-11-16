@@ -47,4 +47,11 @@ public class VeggieController {
             ) {
         return BaseResponseDto.of(SuccessMessage.CREATED, diaryService.createDiary(requestDto, image));
     }
+
+    @GetMapping("/{veggieId}")
+    public BaseResponseDto<?> getVeggie(
+            @PathVariable Long veggieId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getVeggieInfo(veggieId));
+    }
 }

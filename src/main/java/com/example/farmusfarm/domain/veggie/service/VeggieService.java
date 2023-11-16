@@ -49,6 +49,14 @@ public class VeggieService {
         return CreateRoutineResponseDto.of(newRoutine.getId());
     }
 
+    // 채소 정보 조회
+    public GetVeggieInfoResponse getVeggieInfo(Long veggieId) {
+        Veggie veggie = getVeggie(veggieId);
+        int age = Utils.compareLocalDate(LocalDate.now(), veggie.getBirth());
+
+        return GetVeggieInfoResponse.of(veggie.getVeggieInfoId(), veggie.getVeggieNickname(), age);
+    }
+
     // 채소 조회
     public Veggie getVeggie(Long veggieId) {
         return veggieRepository.findById(veggieId)

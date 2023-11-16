@@ -34,6 +34,9 @@ public class Veggie extends BaseEntity {
     private String veggieNickname;
 
     @Column(nullable = false)
+    private String veggieImage;
+
+    @Column(nullable = false)
     private LocalDate birth;
 
     @OneToMany(mappedBy = "veggie")
