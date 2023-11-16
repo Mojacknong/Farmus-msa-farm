@@ -45,6 +45,7 @@ public class Routine extends BaseEntity {
                 .content(content)
                 .period(period)
                 .veggie(veggie)
+                .isDone(false)
                 .build();
 
         veggie.addRoutine(routine);

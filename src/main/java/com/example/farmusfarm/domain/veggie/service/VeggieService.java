@@ -55,7 +55,7 @@ public class VeggieService {
         Veggie veggie = getVeggie(veggieId);
         int age = Utils.compareLocalDate(LocalDate.now(), veggie.getBirth());
 
-        return GetVeggieInfoResponse.of(veggieId, veggie.getVeggieInfoId(), veggie.getVeggieNickname(), age);
+        return GetVeggieInfoResponse.of(veggieId, veggie.getVeggieNickname(), veggie.getVeggieImage(), age);
     }
 
     public GetMyVeggieListDto getMyVeggieList(Long userId) {
@@ -66,8 +66,8 @@ public class VeggieService {
         List<GetVeggieInfoResponse> result = veggieList.stream()
                 .map(v -> GetVeggieInfoResponse.of(
                         v.getId(),
-                        v.getVeggieInfoId(),
                         v.getVeggieNickname(),
+                        v.getVeggieImage(),
                         Utils.compareLocalDate(LocalDate.now(), v.getBirth())))
                 .collect(Collectors.toList());
 
