@@ -30,9 +30,12 @@ public class DiaryImage extends BaseEntity {
     private Diary diary;
 
     public static DiaryImage createDiaryImage(String imageUrl, Diary diary) {
-        return DiaryImage.builder()
+        DiaryImage diaryImage = DiaryImage.builder()
                 .imageUrl(imageUrl)
                 .diary(diary)
                 .build();
+
+        diary.addImage(diaryImage);
+        return diaryImage;
     }
 }

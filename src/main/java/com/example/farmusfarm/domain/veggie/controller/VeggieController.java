@@ -9,12 +9,11 @@ import com.example.farmusfarm.domain.veggie.service.VeggieService;
 import com.example.farmusfarm.global.response.BaseResponseDto;
 import com.example.farmusfarm.global.response.SuccessMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,8 +42,9 @@ public class VeggieController {
 
     @PostMapping("/diary")
     public BaseResponseDto<?> createDiary(
-            @RequestBody CreateDiaryRequestDto requestDto
-    ) {
-
+            @RequestPart final CreateDiaryRequestDto requestDto,
+            @RequestPart final MultipartFile image
+            ) {
+        return BaseResponseDto.of(SuccessMessage.CREATED, diaryService.createDiary(requestDto, image));
     }
 }

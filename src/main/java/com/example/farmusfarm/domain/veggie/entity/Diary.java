@@ -44,20 +44,26 @@ public class Diary extends BaseEntity {
     private List<DiaryImage> diaryImages = new ArrayList<>();
 
     public static Diary createDiary(String content, Veggie veggie) {
-        return Diary.builder()
+        Diary diary = Diary.builder()
                 .content(content)
                 .isOpen(false)
                 .veggie(veggie)
                 .build();
+
+        veggie.addDiary(diary);
+        return diary;
     }
 
     public static Diary createDiaryWithChallenge(String content, boolean isOpen, Veggie veggie, Challenge challenge) {
-        return Diary.builder()
+        Diary diary = Diary.builder()
                 .content(content)
                 .isOpen(isOpen)
                 .veggie(veggie)
                 .challenge(challenge)
                 .build();
+
+        veggie.addDiary(diary);
+        return diary;
     }
 
     public void addImage(DiaryImage diaryImage) {

@@ -1,8 +1,10 @@
 package com.example.farmusfarm.domain.veggie.service;
 
+import com.example.farmusfarm.common.S3Service;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.res.CreateDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
+import com.example.farmusfarm.domain.veggie.entity.DiaryImage;
 import com.example.farmusfarm.domain.veggie.entity.DiaryLike;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.DiaryImageRepository;
@@ -12,6 +14,7 @@ import com.example.farmusfarm.domain.veggie.repository.VeggieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,8 +28,10 @@ public class DiaryService {
     private final DiaryLikeRepository diaryLikeRepository;
     private final VeggieRepository veggieRepository;
 
+    private final S3Service s3Service;
+
     // 일기 생성
-    public CreateDiaryResponseDto createDiary(CreateDiaryRequestDto requestDto) {
+    public CreateDiaryResponseDto createDiary(CreateDiaryRequestDto requestDto, MultipartFile image) {
         Veggie veggie = veggieRepository.findById(requestDto.getVeggieId())
                 .orElseThrow(()-> new IllegalArgumentException("채소가 존재하지 않습니다."));
 
@@ -36,12 +41,12 @@ public class DiaryService {
         } else {
             diary = Diary.createDiary(requestDto.getContent(), veggie);
         }
+        Diary newDiary = diaryRepository.save(diary);
 
         // 이미지 추가
+        createDiaryImage(newDiary, image);
 
-        veggie.addDiary(diary);
-
-        return CreateDiaryResponseDto.of(veggie.getId());
+        return CreateDiaryResponseDto.of(newDiary.getId());
     }
 
     // 일기 조회
@@ -64,5 +69,15 @@ public class DiaryService {
         Diary diary = getDiary(diaryId);
         DiaryLike diaryLike = DiaryLike.createDiaryLike(userId, diary);
         return diaryLikeRepository.save(diaryLike);
+    }
+
+    public void createDiaryImage(Diary diary, MultipartFile image) {
+        String imageUrl = uploadImage(image);
+        DiaryImage diaryImage = DiaryImage.createDiaryImage(imageUrl, diary);
+        diaryImageRepository.save(diaryImage);
+    }
+
+    public String uploadImage(MultipartFile image) {
+        return s3Service.uploadImage(image, "diary");
     }
 }
