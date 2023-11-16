@@ -35,7 +35,7 @@ public class VeggieService {
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
         // 채소 존재 여부 확인 -> OpenFeign
         // 채소 생성
-        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getNickname(), requestDto.getVeggieInfoId(), requestDto.getBirth());
+        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getNickname(), requestDto.getVeggieInfoId(), requestDto.getVeggieImage(), requestDto.getBirth());
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
@@ -54,7 +54,23 @@ public class VeggieService {
         Veggie veggie = getVeggie(veggieId);
         int age = Utils.compareLocalDate(LocalDate.now(), veggie.getBirth());
 
-        return GetVeggieInfoResponse.of(veggie.getVeggieInfoId(), veggie.getVeggieNickname(), age);
+        return GetVeggieInfoResponse.of(veggieId, veggie.getVeggieInfoId(), veggie.getVeggieNickname(), age);
+    }
+
+    public GetMyVeggieListDto getMyVeggieList(Long userId) {
+        List<Veggie> veggieList = getVeggieList(userId);
+
+        // 페인으로 유저 닉네임 가져옴
+        String userNickname = "파머";
+        List<GetVeggieInfoResponse> result = veggieList.stream()
+                .map(v -> GetVeggieInfoResponse.of(
+                        v.getId(),
+                        v.getVeggieInfoId(),
+                        v.getVeggieNickname(),
+                        Utils.compareLocalDate(LocalDate.now(), v.getBirth())))
+                .collect(Collectors.toList());
+
+        return GetMyVeggieListDto.of(userNickname, result);
     }
 
     // 채소 조회

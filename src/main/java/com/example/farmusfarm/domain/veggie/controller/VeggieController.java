@@ -54,4 +54,10 @@ public class VeggieController {
     ) {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getVeggieInfo(veggieId));
     }
+
+    @GetMapping("")
+    public BaseResponseDto<?> getMyVeggieList(HttpServletRequest request) {
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieList(userId));
+    }
 }

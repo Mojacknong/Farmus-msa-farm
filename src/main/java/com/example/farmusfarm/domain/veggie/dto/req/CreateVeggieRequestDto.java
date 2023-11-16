@@ -11,5 +11,6 @@ public class CreateVeggieRequestDto {
 
     private String nickname;
     private String veggieInfoId;
+    private String veggieImage;
     private String birth;
 }

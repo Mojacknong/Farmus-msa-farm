@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @Getter
-public class GetVeggieInfoResponse {
+public class GetMyVeggieListDto {
 
-    private Long id;
-    private String nickname;
-    private String image;
-    private int age;
+    private String userNickname;
+    private List<GetVeggieInfoResponse> veggieList;
 }
