@@ -2,10 +2,7 @@ package com.example.farmusfarm.domain.veggie.service;
 
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
-import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
-import com.example.farmusfarm.domain.veggie.dto.req.CreateVeggieRequestDto;
-import com.example.farmusfarm.domain.veggie.dto.req.UpdateRoutineRequestDto;
-import com.example.farmusfarm.domain.veggie.dto.req.UpdateVeggieRequestDto;
+import com.example.farmusfarm.domain.veggie.dto.req.*;
 import com.example.farmusfarm.domain.veggie.dto.res.*;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Routine;
@@ -42,6 +39,14 @@ public class VeggieService {
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
+    }
+
+    // 루틴 생성
+    public CreateRoutineResponseDto createNewRoutine(CreateRoutineRequestDto requestDto) {
+        Veggie veggie = getVeggie(requestDto.getVeggieId());
+        Routine newRoutine = createRoutine(requestDto.getDate(), requestDto.getContent(), 0, veggie);
+
+        return CreateRoutineResponseDto.of(newRoutine.getId());
     }
 
     // 채소 조회
@@ -101,9 +106,8 @@ public class VeggieService {
     }
 
     // 루틴 생성
-    public Routine createRoutine(Date date, String content, int period, Veggie veggie) {
+    public Routine createRoutine(String date, String content, int period, Veggie veggie) {
         Routine newRoutine = Routine.createRoutine(date, content, period, veggie);
-
         return routineRepository.save(newRoutine);
     }
 

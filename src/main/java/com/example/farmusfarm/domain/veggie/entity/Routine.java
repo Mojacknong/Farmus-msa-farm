@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,7 +24,7 @@ public class Routine extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @Column(nullable = false)
     private String content;
@@ -38,15 +39,15 @@ public class Routine extends BaseEntity {
     @JoinColumn(name = "veggie_id")
     private Veggie veggie;
 
-    public static Routine createRoutine(Date date, String content, int period, Veggie veggie) {
+    public static Routine createRoutine(String date, String content, int period, Veggie veggie) {
         Routine routine = Routine.builder()
-                .date(date)
+                .date(LocalDate.parse(date))
                 .content(content)
                 .period(period)
                 .veggie(veggie)
                 .build();
 
-        veggie.getRoutines().add(routine);
+        veggie.addRoutine(routine);
         return routine;
     }
 

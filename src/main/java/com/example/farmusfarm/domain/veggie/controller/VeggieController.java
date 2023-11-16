@@ -1,6 +1,8 @@
 package com.example.farmusfarm.domain.veggie.controller;
 
 import com.example.farmusfarm.common.JwtTokenProvider;
+import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
+import com.example.farmusfarm.domain.veggie.dto.req.CreateRoutineRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateVeggieRequestDto;
 import com.example.farmusfarm.domain.veggie.service.DiaryService;
 import com.example.farmusfarm.domain.veggie.service.VeggieService;
@@ -32,5 +34,17 @@ public class VeggieController {
         return BaseResponseDto.of(SuccessMessage.CREATED, veggieService.createVeggie(userId, requestDto));
     }
 
+    @PostMapping("/routine")
+    public BaseResponseDto<?> createRoutine(
+            @RequestBody CreateRoutineRequestDto requestDto
+    ) {
+        return BaseResponseDto.of(SuccessMessage.CREATED, veggieService.createNewRoutine(requestDto));
+    }
 
+    @PostMapping("/diary")
+    public BaseResponseDto<?> createDiary(
+            @RequestBody CreateDiaryRequestDto requestDto
+    ) {
+
+    }
 }
