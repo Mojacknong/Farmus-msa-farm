@@ -60,4 +60,21 @@ public class VeggieController {
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieList(userId));
     }
+
+    @GetMapping("/mission")
+    public BaseResponseDto<?> getCurrentMissionList(
+            HttpServletRequest request
+    ) {
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getCurrentMissionList(userId));
+    }
+
+    @GetMapping("/routine")
+    public BaseResponseDto<?> getRoutineList(
+            HttpServletRequest request,
+            @RequestParam String date
+    ) {
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getDayRoutines(userId, date));
+    }
 }

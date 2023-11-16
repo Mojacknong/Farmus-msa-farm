@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @Getter
-public class GetTaskListResponseDto {
+public class GetDayRoutinesResponseDto {
 
-    private Long id;
+    private String veggieNickname;
+    private List<GetDayRoutinesDto> routineList;
 }

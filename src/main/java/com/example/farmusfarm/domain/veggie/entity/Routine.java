@@ -33,7 +33,7 @@ public class Routine extends BaseEntity {
     private int period = 0;
 
     @Column(nullable = false)
-    private boolean isDone = false;
+    private Boolean isDone = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veggie_id")

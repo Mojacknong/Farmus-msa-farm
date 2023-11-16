@@ -35,7 +35,7 @@ public class VeggieService {
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
         // 채소 존재 여부 확인 -> OpenFeign
         // 채소 생성
-        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getNickname(), requestDto.getVeggieInfoId(), requestDto.getVeggieImage(), requestDto.getBirth());
+        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getVeggieInfoId(), requestDto.getNickname(), requestDto.getVeggieImage(), requestDto.getBirth());
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
@@ -71,6 +71,26 @@ public class VeggieService {
                 .collect(Collectors.toList());
 
         return GetMyVeggieListDto.of(userNickname, result);
+    }
+
+    // 유저 별 모든 현재 미션 조회
+    public List<GetCurrentMissionDto> getCurrentMissionList(Long userId) {
+        List<Veggie> veggieList = getVeggieList(userId);
+        return veggieList.stream()
+                .filter(v -> v.getRegistration() != null)
+                .map( v -> GetCurrentMissionDto.of(
+                        v.getRegistration().getChallenge().getId(),
+                        v.getVeggieNickname(),
+                        v.getRegistration().getCurrentStep(),
+                        v.getRegistration().getCurrentStepName()))
+                .collect(Collectors.toList());
+    }
+
+    // 유저 별 미션, 루틴 전체 조회
+    public List<GetDayRoutinesResponseDto> getDayRoutines(Long userId, String date) {
+        // 전체 루틴 리스트
+        List<Veggie> veggieList = getVeggieList(userId);
+        return veggieList.stream().map(v -> getRoutineInfo(v, LocalDate.parse(date))).collect(Collectors.toList());
     }
 
     // 채소 조회
@@ -117,18 +137,6 @@ public class VeggieService {
         veggie.unregister();
     }
 
-    // 유저 별 모든 현재 미션 조회
-
-    // 유저 별 미션, 루틴 전체 조회
-    public GetTaskListResponseDto getTaskList(Long userId) {
-        // 전체 루틴 리스트
-        List<Long> veggieIds = getVeggieIds(userId);
-        List<List<Routine>> routines = veggieIds.stream().map(this::getRoutines).collect(Collectors.toList());
-
-        // 전체 미션 리스트
-        return GetTaskListResponseDto.of(userId);
-    }
-
     // 루틴 생성
     public Routine createRoutine(String date, String content, int period, Veggie veggie) {
         Routine newRoutine = Routine.createRoutine(date, content, period, veggie);
@@ -138,7 +146,7 @@ public class VeggieService {
     // 루틴 완료
     public boolean finishRoutine(Long routineId) {
         Routine routine = getRoutine(routineId);
-        if (routine == null || routine.isDone()) {
+        if (routine == null || routine.getIsDone()) {
             return false;
         } else {
             routine.updateDone();
@@ -152,9 +160,15 @@ public class VeggieService {
                 .orElseThrow(() -> new EntityNotFoundException("루틴이 존재하지 않습니다."));
     }
 
-    // 채소 별 루틴 전체 조회
-    public List<Routine> getRoutines(Long veggieId) {
-        return routineRepository.findAllByVeggieId(veggieId);
+    // date에 맞는 루틴만 조회
+    public GetDayRoutinesResponseDto getRoutineInfo(Veggie veggie, LocalDate date) {
+        List<Routine> routines = veggie.getRoutines();
+        List<GetDayRoutinesDto> result = routines.stream()
+                .filter(r -> r.getDate().isEqual(date))
+                .map(r -> GetDayRoutinesDto.of(r.getId(), r.getContent(), r.getPeriod(), r.getIsDone()))
+                .collect(Collectors.toList());
+
+        return GetDayRoutinesResponseDto.of(veggie.getVeggieNickname(), result);
     }
 
     // 루틴 수정
@@ -164,8 +178,4 @@ public class VeggieService {
 
         return UpdateRoutineResponseDto.of(routine.getId());
     }
-
-
-
-
 }
