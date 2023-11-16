@@ -3,6 +3,9 @@ package com.example.farmusfarm.global.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -10,30 +13,30 @@ import static com.example.farmusfarm.global.response.SuccessMessage.SUCCESS;
 
 
 @Getter
-@JsonPropertyOrder({"code", "isSuccess", "message", "result"})
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonPropertyOrder({"code", "message", "data"})
 public class BaseResponseDto<T> {
     private final int code;
-    @JsonProperty("isSuccess")
     private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private T result;
+    private T data;
 
-    // 요청에 성공한 경우
-    public BaseResponseDto(T result) {
-        this.code = HttpStatus.OK.value();
-        this.message = SUCCESS.getMessage();
-        this.result = result;
+    public static <T> BaseResponseDto of(SuccessMessage successMessage, T data){
+
+        return BaseResponseDto.builder()
+                .code(successMessage.getCode())
+                .message(successMessage.getMessage())
+                .data(data)
+                .build();
     }
 
-    // 요청에 실패한 경우
-    public BaseResponseDto(ErrorMessage errorMessage) {
-        this.code = errorMessage.getCode();
-        this.message = errorMessage.getMessage();
-    }
+    public static <T> BaseResponseDto of(ErrorMessage errorMessage){
 
-    public BaseResponseDto(int code, String errorMessage) {
-        this.code = code;
-        this.message = errorMessage;
+        return BaseResponseDto.builder()
+                .code(errorMessage.getCode())
+                .message(errorMessage.getMessage())
+                .build();
     }
 }
