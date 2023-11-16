@@ -95,6 +95,24 @@ public class VeggieService {
         return veggieList.stream().map(v -> getRoutineInfo(v, LocalDate.parse(date))).collect(Collectors.toList());
     }
 
+    // 루틴 수정
+    public UpdateRoutineResponseDto updateRoutine(UpdateRoutineRequestDto requestDto) {
+        Routine routine = getRoutine(requestDto.getRoutineId());
+        routine.updatePeriod(requestDto.getPeriod());
+
+        return UpdateRoutineResponseDto.of(routine.getId());
+    }
+
+    // 루틴 체크
+    public CheckRoutineResponseDto checkRoutine(CheckRoutineRequestDto requestDto) {
+        Routine routine = getRoutine(requestDto.getRoutineId());
+        routine.updateDone();
+
+        return CheckRoutineResponseDto.of(routine.getId(), routine.getIsDone());
+    }
+
+    // -------------------- api --------------------
+
     // 채소 조회
     public Veggie getVeggie(Long veggieId) {
         return veggieRepository.findById(veggieId)
@@ -171,14 +189,6 @@ public class VeggieService {
                 .collect(Collectors.toList());
 
         return GetDayRoutinesResponseDto.of(veggie.getVeggieNickname(), veggie.getColor(),result);
-    }
-
-    // 루틴 수정
-    public UpdateRoutineResponseDto updateRoutine(UpdateRoutineRequestDto requestDto) {
-        Routine routine = getRoutine(requestDto.getRoutineId());
-        routine.updatePeriod(requestDto.getPeriod());
-
-        return UpdateRoutineResponseDto.of(routine.getId());
     }
 
     public String getRandomColorCode() {

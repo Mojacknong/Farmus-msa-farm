@@ -57,7 +57,7 @@ public class Routine extends BaseEntity {
     }
 
     public void updateDone() {
-        this.isDone = true;
+        this.isDone = !this.isDone;
     }
 
 

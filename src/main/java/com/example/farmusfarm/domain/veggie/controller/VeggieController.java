@@ -1,13 +1,12 @@
 package com.example.farmusfarm.domain.veggie.controller;
 
 import com.example.farmusfarm.common.JwtTokenProvider;
-import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
-import com.example.farmusfarm.domain.veggie.dto.req.CreateRoutineRequestDto;
-import com.example.farmusfarm.domain.veggie.dto.req.CreateVeggieRequestDto;
+import com.example.farmusfarm.domain.veggie.dto.req.*;
 import com.example.farmusfarm.domain.veggie.service.DiaryService;
 import com.example.farmusfarm.domain.veggie.service.VeggieService;
 import com.example.farmusfarm.global.response.BaseResponseDto;
 import com.example.farmusfarm.global.response.SuccessMessage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,5 +75,19 @@ public class VeggieController {
     ) {
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getDayRoutines(userId, date));
+    }
+
+    @PatchMapping("/routine")
+    public BaseResponseDto<?> updateRoutine(
+            @RequestBody UpdateRoutineRequestDto requestDto
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.updateRoutine(requestDto));
+    }
+
+    @PatchMapping("/routine/check")
+    public BaseResponseDto<?> updateRoutineCheck(
+            @RequestBody CheckRoutineRequestDto requestDto
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.checkRoutine(requestDto));
     }
 }
