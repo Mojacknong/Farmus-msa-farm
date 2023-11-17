@@ -38,10 +38,10 @@ public class MissionPost extends BaseEntity {
     @Builder.Default
     private List<MissionPostImage> missionPostImages = new ArrayList<>();
 
-    public static MissionPost createMissionPost(String content, int step, Registration registration) {
+    public static MissionPost createMissionPost(String content, Registration registration) {
         MissionPost newPost = MissionPost.builder()
                 .content(content)
-                .step(step)
+                .step(registration.getCurrentStep())
                 .registration(registration)
                 .build();
 

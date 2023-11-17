@@ -7,12 +7,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CreateChallengeRequestDto {
+public class CreateMissionPostRequestDto {
 
-    private Long myVeggieId;
-    private String veggieInfoId;
-
-    private String challengeName;
-    private int maxUser;
-    private String description;
+    private Long registrationId;
+    private String content;
 }
