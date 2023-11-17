@@ -10,6 +10,7 @@ import com.example.farmusfarm.domain.challenge.repository.MissionPostImageReposi
 import com.example.farmusfarm.domain.challenge.repository.MissionPostLikeRepository;
 import com.example.farmusfarm.domain.challenge.repository.MissionPostRepository;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
+import com.example.farmusfarm.domain.veggieInfo.openfeign.VeggieInfoFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class MissionPostService {
     private final S3Service s3Service;
     private final ChallengeService challengeService;
 
+    private final VeggieInfoFeignClient veggieInfoFeignClient;
+
     public CreateMissionPostResponseDto createMissionPost(CreateMissionPostRequestDto requestDto, MultipartFile image) {
         Registration registration = registrationRepository.findById(requestDto.getRegistrationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 등록입니다."));
@@ -41,7 +44,7 @@ public class MissionPostService {
         missionPostImageRepository.save(missionPostImage);
 
         // 다음 스텝 불러오기
-        String nextStep = "다음 스텝";
+        String nextStep = veggieInfoFeignClient.getVeggieInfoStepName(registration.getVeggie().getVeggieInfoId(), savedPost.getStep() + 1).getStepName();
         registration.updateCurrentStep(nextStep);
         registrationRepository.save(registration);
 

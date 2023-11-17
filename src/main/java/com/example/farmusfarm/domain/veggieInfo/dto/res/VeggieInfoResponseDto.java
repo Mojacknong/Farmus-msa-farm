@@ -14,4 +14,5 @@ public class VeggieInfoResponseDto {
     private String imageUrl = "https://farmuscropdata.s3.ap-northeast-2.amazonaws.com/image/%E1%84%91%E1%85%A1.png";
     private String grayImageUrl = "https://farmuscropdata.s3.ap-northeast-2.amazonaws.com/image/%E1%84%91%E1%85%A1_%E1%84%92%E1%85%B3%E1%86%A8.png";
     private int stepNum = 6;
+    private String firstStepName = "씨앗 뿌리기";
 }

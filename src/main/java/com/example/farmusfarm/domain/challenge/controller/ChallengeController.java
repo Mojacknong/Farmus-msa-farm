@@ -7,6 +7,7 @@ import com.example.farmusfarm.domain.challenge.dto.req.CreateMissionPostRequestD
 import com.example.farmusfarm.domain.challenge.dto.req.CreateRegistrationRequestDto;
 import com.example.farmusfarm.domain.challenge.service.ChallengeService;
 import com.example.farmusfarm.domain.challenge.service.MissionPostService;
+import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepNameResponseDto;
 import com.example.farmusfarm.global.response.BaseResponseDto;
 import com.example.farmusfarm.global.response.SuccessMessage;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,10 @@ public class ChallengeController {
             @RequestPart("image") MultipartFile image
     ) {
         return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(requestDto, image));
+    }
+
+    @GetMapping("/test")
+    public BaseResponseDto<?> test() {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.test());
     }
 }
