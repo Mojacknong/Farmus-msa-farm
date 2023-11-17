@@ -63,6 +63,7 @@ public class Diary extends BaseEntity {
                 .build();
 
         veggie.addDiary(diary);
+        challenge.addDiary(diary);
         return diary;
     }
 

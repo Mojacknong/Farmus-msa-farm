@@ -290,7 +290,7 @@ public class ChallengeService {
                 challenge.getRegistrations().size(),
                 getStatusCount(challenge.getStartedAt()),
                 null,
-        0,
+                0,
                 "",
                 "",
                 new ArrayList<String>(),

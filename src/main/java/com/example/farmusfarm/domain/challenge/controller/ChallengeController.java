@@ -8,6 +8,7 @@ import com.example.farmusfarm.domain.challenge.dto.req.CreateRegistrationRequest
 import com.example.farmusfarm.domain.challenge.dto.req.SearchChallengeListRequestDto;
 import com.example.farmusfarm.domain.challenge.service.ChallengeService;
 import com.example.farmusfarm.domain.challenge.service.MissionPostService;
+import com.example.farmusfarm.domain.veggie.service.DiaryService;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepNameResponseDto;
 import com.example.farmusfarm.global.response.BaseResponseDto;
 import com.example.farmusfarm.global.response.SuccessMessage;
@@ -25,6 +26,7 @@ public class ChallengeController {
     private final ChallengeService challengeService;
     private final MissionPostService missionPostService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final DiaryService diaryService;
 
     @PostMapping
     public BaseResponseDto<?> createChallenge(
@@ -66,6 +68,24 @@ public class ChallengeController {
     ) {
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getChallengeDetail(challengeId, userId));
+    }
+
+    @PostMapping("/mission/{id}")
+    public BaseResponseDto<?> likeMissionPost(
+            HttpServletRequest request,
+            @PathVariable Long id
+    ) {
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.likeMissionPost(userId, id));
+    }
+
+    @PostMapping("/diary/{id}")
+    public BaseResponseDto<?> likeDiary(
+            HttpServletRequest request,
+            @PathVariable Long id
+    ) {
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, diaryService.likeDiary(id, userId));
     }
 
     @GetMapping("/test")
