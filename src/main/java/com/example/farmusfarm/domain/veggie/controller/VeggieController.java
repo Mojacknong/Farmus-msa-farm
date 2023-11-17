@@ -6,13 +6,12 @@ import com.example.farmusfarm.domain.veggie.service.DiaryService;
 import com.example.farmusfarm.domain.veggie.service.VeggieService;
 import com.example.farmusfarm.global.response.BaseResponseDto;
 import com.example.farmusfarm.global.response.SuccessMessage;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -76,7 +75,7 @@ public class VeggieController {
             @RequestParam String date
     ) {
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
-        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getDayRoutines(userId, date));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMonthRoutines(userId, LocalDate.parse(date)));
     }
 
     @PatchMapping("/routine")

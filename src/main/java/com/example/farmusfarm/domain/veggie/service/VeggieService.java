@@ -5,7 +5,6 @@ import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
 import com.example.farmusfarm.domain.veggie.dto.req.*;
 import com.example.farmusfarm.domain.veggie.dto.res.*;
-import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Routine;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.RoutineRepository;
@@ -17,9 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,10 +87,25 @@ public class VeggieService {
     }
 
     // 유저 별 미션, 루틴 전체 조회
-    public List<GetDayRoutinesResponseDto> getDayRoutines(Long userId, String date) {
+    public List<List<GetDayRoutinesResponseDto>> getMonthRoutines(Long userId, LocalDate date) {
+
+        int days = date.lengthOfMonth();
+
+        // 이번 달 만큼의 루틴 리스트
+        List<List<GetDayRoutinesResponseDto>> result = new ArrayList<>();
+
         // 전체 루틴 리스트
         List<Veggie> veggieList = getVeggieList(userId);
-        return veggieList.stream().map(v -> getRoutineInfo(v, LocalDate.parse(date))).collect(Collectors.toList());
+
+        // 이번 달 반복문
+        for (int i = 1; i <= days; i++) {
+            LocalDate currentDate = LocalDate.of(date.getYear(), date.getMonth(), i);
+            result.add(veggieList.stream().map(v -> getRoutineInfo(v, currentDate)).collect(Collectors.toList()));
+        }
+
+        return result;
+
+        //return veggieList.stream().map(v -> getRoutineInfo(v, date)).collect(Collectors.toList());
     }
 
     // 루틴 수정
