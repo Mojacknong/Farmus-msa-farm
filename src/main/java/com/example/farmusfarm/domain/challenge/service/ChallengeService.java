@@ -83,6 +83,16 @@ public class ChallengeService {
         return CreateRegistrationResponseDto.of(savedRegistration.getId());
     }
 
+    public GetChallengeInfoResponse getChallengeDetail(Long challengeId, Long userId) {
+
+        if (checkAlreadyRegistered(userId, challengeId)) {
+            return getMyChallengeInfo(userId, challengeId);
+        } else {
+            return getOtherChallengeInfo(challengeId);
+        }
+
+    }
+
     // 챌린지 종료
     public DeleteRegistrationResponseDto deleteRegistration(Long veggieId, Long challengeId) {
         Registration registration = getVeggieRegistration(veggieId, challengeId);
@@ -162,6 +172,10 @@ public class ChallengeService {
         return statedAt == null ? "준비 중" : "시작한 지 " + Utils.compareLocalDate(LocalDate.now(), statedAt) + "일째";
     }
 
+    private int getStatusCount(LocalDate statedAt) {
+        return statedAt == null ? -1 : Utils.compareLocalDate(LocalDate.now(), statedAt);
+    }
+
     private List<SearchChallengeResponseDto> streamChallengeListToSearchResult(List<Challenge> challengeList) {
         return challengeList.stream().map(c -> {
             String cStatus = getStatusMessage(c.getStartedAt());
@@ -210,7 +224,13 @@ public class ChallengeService {
     public List<Integer> getChallengeAchievement(Long challengeId, int maxStep) {
         List<Registration> registrationList = getAllRegistrationByChallenge(challengeId);
 
-        List<Integer> achievement = new ArrayList<>(maxStep + 1);
+        // 모든 값이 0으로 초기화되고, 크기는 maxStep인 ArrayList 생성
+        List<Integer> achievement = new ArrayList<>(maxStep);
+        for (int i = 0; i < maxStep; i++) {
+            achievement.add(0);
+        }
+
+        log.info(achievement.toString());
 
         // 등록 목록을 돌면서 각 스텝 별 인원수 체크
         for (Registration r : registrationList) {
@@ -244,8 +264,9 @@ public class ChallengeService {
                 challenge.getDifficulty(),
                 challenge.getMaxUser(),
                 challenge.getRegistrations().size(),
-                Utils.compareLocalDate(challenge.getStartedAt(), LocalDate.now()),
+                getStatusCount(challenge.getStartedAt()),
                 getChallengeAchievement(challengeId, challenge.getMaxStep()),
+                registration.getCurrentStep(),
                 registration.getCurrentStepName(),
                 "",
                 imageList,
@@ -267,8 +288,9 @@ public class ChallengeService {
                 challenge.getDifficulty(),
                 challenge.getMaxUser(),
                 challenge.getRegistrations().size(),
-                Utils.compareLocalDate(challenge.getStartedAt(), LocalDate.now()),
+                getStatusCount(challenge.getStartedAt()),
                 null,
+        0,
                 "",
                 "",
                 new ArrayList<String>(),
@@ -289,9 +311,13 @@ public class ChallengeService {
         }
 
         // 이미 참여한 챌린지인지 체크
-        if (registrationRepository.findByUserIdAndChallengeId(userId, challengeId).isPresent()) {
+        if (checkAlreadyRegistered(userId, challengeId)) {
             throw new IllegalArgumentException("이미 참여한 챌린지입니다.");
         }
+    }
+
+    public Boolean checkAlreadyRegistered(Long userId, Long challengeId) {
+        return registrationRepository.findByUserIdAndChallengeId(userId, challengeId).isPresent();
     }
 
     public GetStepNameResponseDto test() {

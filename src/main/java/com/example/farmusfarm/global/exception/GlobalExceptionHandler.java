@@ -68,9 +68,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unhandledException(Exception e, HttpServletRequest request) {
-        log.error("UnhandledException: {} {} errMessage={}\n",
+        log.error("UnhandledException: {} {} errMessage={}\n{}",
                 request.getMethod(),
                 request.getRequestURI(),
+                e.getStackTrace(),
                 e.getMessage()
         );
         return ResponseEntity.internalServerError()

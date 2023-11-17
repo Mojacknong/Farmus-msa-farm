@@ -59,6 +59,15 @@ public class ChallengeController {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.searchChallengeList(requestDto.getDifficulties(), requestDto.getStatus(), requestDto.getKeyword()));
     }
 
+    @GetMapping("/{challengeId}")
+    public BaseResponseDto<?> getChallengeDetail(
+            HttpServletRequest request,
+            @PathVariable Long challengeId
+    ) {
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getChallengeDetail(challengeId, userId));
+    }
+
     @GetMapping("/test")
     public BaseResponseDto<?> test() {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.test());
