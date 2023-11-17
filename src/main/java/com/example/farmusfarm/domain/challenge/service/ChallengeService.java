@@ -114,16 +114,33 @@ public class ChallengeService {
     }
 
     // 전체 챌린지 목록 검색
-    public List<SearchChallengeResponseDto> searchChallengeList(List<String> difficulties, String status) {
+    public List<SearchChallengeResponseDto> searchChallengeList(List<String> difficulties, String status, String keyword) {
         List<Challenge> challengeList;
+
+        if (difficulties.isEmpty()) {
+            difficulties = List.of("Easy", "Normal", "Hard");
+        }
 
         if (status.equals("All")) {
             challengeList = challengeRepository.findAllByDifficultyIsIn(difficulties);
+        } else if (status.equals("준비 중")) {
+            challengeList = challengeRepository.findAllByDifficultyIsInAndStartedAtIsNull(difficulties);
         } else {
-            challengeList = challengeRepository.findAllByDifficultyIsInAndStartedAtExists(difficulties, status.equals("준비 중"));
+            challengeList = challengeRepository.findAllByDifficultyIsInAndStartedAtIsNotNull(difficulties);
+        }
+
+        if (!keyword.isEmpty()) {
+            challengeList = searchByKeyword(challengeList, keyword);
         }
 
         return streamChallengeListToSearchResult(challengeList);
+    }
+
+    public List<Challenge> searchByKeyword(List<Challenge> challengeList, String keyword) {
+        // find which contains keyword in veggieName or challengeName
+        return challengeList.stream()
+                .filter(c -> c.getVeggieName().contains(keyword) || c.getChallengeName().contains(keyword))
+                .collect(Collectors.toList());
     }
 
     // 추천 챌린지 조회
@@ -141,8 +158,8 @@ public class ChallengeService {
         return streamChallengeListToSearchResult(challengeList);
     }
 
-    private String getStatusMessage(String statedAt) {
-        return statedAt == null ? "준비 중" : "시작한 지 " + Utils.compareLocalDate(LocalDate.parse(statedAt), LocalDate.now()) + "일째";
+    private String getStatusMessage(LocalDate statedAt) {
+        return statedAt == null ? "준비 중" : "시작한 지 " + Utils.compareLocalDate(LocalDate.now(), statedAt) + "일째";
     }
 
     private List<SearchChallengeResponseDto> streamChallengeListToSearchResult(List<Challenge> challengeList) {
@@ -227,7 +244,7 @@ public class ChallengeService {
                 challenge.getDifficulty(),
                 challenge.getMaxUser(),
                 challenge.getRegistrations().size(),
-                Utils.compareLocalDate(LocalDate.parse(challenge.getStartedAt()), LocalDate.now()),
+                Utils.compareLocalDate(challenge.getStartedAt(), LocalDate.now()),
                 getChallengeAchievement(challengeId, challenge.getMaxStep()),
                 registration.getCurrentStepName(),
                 "",
@@ -250,7 +267,7 @@ public class ChallengeService {
                 challenge.getDifficulty(),
                 challenge.getMaxUser(),
                 challenge.getRegistrations().size(),
-                Utils.compareLocalDate(LocalDate.parse(challenge.getStartedAt()), LocalDate.now()),
+                Utils.compareLocalDate(challenge.getStartedAt(), LocalDate.now()),
                 null,
                 "",
                 "",

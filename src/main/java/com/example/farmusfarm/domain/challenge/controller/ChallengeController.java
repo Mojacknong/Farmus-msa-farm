@@ -5,6 +5,7 @@ import com.example.farmusfarm.common.S3Service;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateChallengeRequestDto;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateMissionPostRequestDto;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateRegistrationRequestDto;
+import com.example.farmusfarm.domain.challenge.dto.req.SearchChallengeListRequestDto;
 import com.example.farmusfarm.domain.challenge.service.ChallengeService;
 import com.example.farmusfarm.domain.challenge.service.MissionPostService;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepNameResponseDto;
@@ -49,6 +50,13 @@ public class ChallengeController {
             @RequestPart("image") MultipartFile image
     ) {
         return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(requestDto, image));
+    }
+
+    @GetMapping("")
+    public BaseResponseDto<?> searchChallengeList(
+            @RequestBody SearchChallengeListRequestDto requestDto
+            ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.searchChallengeList(requestDto.getDifficulties(), requestDto.getStatus(), requestDto.getKeyword()));
     }
 
     @GetMapping("/test")
