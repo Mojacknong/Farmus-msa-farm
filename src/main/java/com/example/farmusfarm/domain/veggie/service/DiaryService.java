@@ -1,9 +1,13 @@
 package com.example.farmusfarm.domain.veggie.service;
 
 import com.example.farmusfarm.common.S3Service;
+import com.example.farmusfarm.domain.challenge.dto.res.LikeMissionPostResponseDto;
+import com.example.farmusfarm.domain.challenge.entity.MissionPost;
+import com.example.farmusfarm.domain.challenge.entity.MissionPostLike;
 import com.example.farmusfarm.domain.veggie.dto.req.CreateDiaryRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.res.CreateDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.dto.res.GetMyDiaryResponseDto;
+import com.example.farmusfarm.domain.veggie.dto.res.LikeDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.DiaryImage;
 import com.example.farmusfarm.domain.veggie.entity.DiaryLike;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,10 +80,18 @@ public class DiaryService {
         diaryRepository.deleteById(diaryId);
     }
 
-    public DiaryLike createLike(Long diaryId, Long userId) {
+    public LikeDiaryResponseDto likeDiary(Long diaryId, Long userId) {
         Diary diary = getDiary(diaryId);
-        DiaryLike diaryLike = DiaryLike.createDiaryLike(userId, diary);
-        return diaryLikeRepository.save(diaryLike);
+        Optional<DiaryLike> like = diaryLikeRepository.findByDiaryIdAndUserId(diaryId, userId);
+        Boolean result = like.isEmpty();
+
+        if (result) {
+            diaryLikeRepository.save(DiaryLike.createDiaryLike(userId, diary));
+        } else {
+            diaryLikeRepository.delete(like.get());
+        }
+
+        return LikeDiaryResponseDto.of(result);
     }
 
     public void createDiaryImage(Diary diary, MultipartFile image) {

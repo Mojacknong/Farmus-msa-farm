@@ -23,6 +23,7 @@ public class GetChallengeInfoResponse {
     private int status;
 
     private List<Integer> achievement;
+    private int stepNum;
     private String stepName;
     private String stepTip;
     private List<String> stepImages;

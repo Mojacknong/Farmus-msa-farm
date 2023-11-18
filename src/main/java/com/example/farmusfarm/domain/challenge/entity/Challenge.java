@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class Challenge extends BaseEntity {
     private int maxUser;
 
     @Column
-    private String startedAt = null;
+    private LocalDate startedAt = null;
 
     @OneToMany(mappedBy = "challenge")
     @Builder.Default
@@ -82,6 +83,6 @@ public class Challenge extends BaseEntity {
     }
 
     public void setStartedAt(String startedAt) {
-        this.startedAt = startedAt;
+        this.startedAt = LocalDate.parse(startedAt);
     }
 }

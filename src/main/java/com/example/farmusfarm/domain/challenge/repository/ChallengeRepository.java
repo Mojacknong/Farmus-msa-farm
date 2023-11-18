@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
-    @Query("select c from challenge c where c.difficulty in :difficulty and c.startedAt = :startedAtExists")
-    List<Challenge> findAllByDifficultyIsInAndStartedAtExists(List<String> difficulty, boolean startedAtExists);
+    List<Challenge> findAllByDifficultyIsInAndStartedAtIsNotNull(List<String> difficulty);
+    List<Challenge> findAllByDifficultyIsInAndStartedAtIsNull(List<String> difficulty);
 
     @Query("select c from challenge c where c.difficulty in :difficulty")
     List<Challenge> findAllByDifficultyIsIn(List<String> difficulty);

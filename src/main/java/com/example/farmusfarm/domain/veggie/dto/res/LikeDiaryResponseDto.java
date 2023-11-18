@@ -1,4 +1,4 @@
-package com.example.farmusfarm.domain.challenge.dto.res;
+package com.example.farmusfarm.domain.veggie.dto.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @Getter
-public class LikeMissionPostResponseDto {
-    
+public class LikeDiaryResponseDto {
+
     private Boolean isLiked;
 }
