@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/challenge")
+@RequestMapping("/api/farmclub")
 public class ChallengeController {
 
     private final ChallengeService challengeService;

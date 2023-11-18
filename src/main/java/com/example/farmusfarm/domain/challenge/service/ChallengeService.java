@@ -2,6 +2,7 @@ package com.example.farmusfarm.domain.challenge.service;
 
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateChallengeRequestDto;
+import com.example.farmusfarm.domain.challenge.dto.req.FinishChallengeRequestDto;
 import com.example.farmusfarm.domain.challenge.dto.res.*;
 import com.example.farmusfarm.domain.challenge.entity.Challenge;
 import com.example.farmusfarm.domain.challenge.entity.MissionPost;
@@ -80,6 +81,12 @@ public class ChallengeService {
         Registration savedRegistration = registrationRepository.save(registration);
 
         return CreateRegistrationResponseDto.of(savedRegistration.getId());
+    }
+
+    public FinishChallengeResponseDto finishChallenge(FinishChallengeRequestDto requestDto) {
+        
+
+        return FinishChallengeResponseDto.of(true);
     }
 
     public GetChallengeInfoResponse getChallengeDetail(Long challengeId, Long userId) {
