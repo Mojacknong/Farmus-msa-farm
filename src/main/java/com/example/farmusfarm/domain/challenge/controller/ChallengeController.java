@@ -42,13 +42,14 @@ public class ChallengeController {
 
     @PostMapping("/mission")
     public BaseResponseDto<?> createMissionPost(
+            @RequestHeader("user") Long userId,
             @RequestPart("content") CreateMissionPostRequestDto requestDto,
             @RequestPart("image") MultipartFile image
     ) {
-        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(requestDto, image));
+        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(userId, requestDto, image));
     }
 
-    @GetMapping("")
+    @PostMapping("/search")
     public BaseResponseDto<?> searchChallengeList(
             @RequestBody SearchChallengeListRequestDto requestDto
             ) {
