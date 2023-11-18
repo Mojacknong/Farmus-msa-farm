@@ -36,7 +36,7 @@ public class    Registration extends BaseEntity {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    @OneToMany(mappedBy = "registration")
+    @OneToMany(mappedBy = "registration", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<MissionPost> missionPosts = new ArrayList<>();
 

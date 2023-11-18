@@ -105,4 +105,13 @@ public class VeggieController {
     ) {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, diaryService.getVeggieDiaryList(veggieId));
     }
+
+    @DeleteMapping
+    public BaseResponseDto<?> deleteVeggie(
+            HttpServletRequest request,
+            @RequestBody FinishFarmRequestDto requestDto
+    ) {
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.finishFarm(requestDto, userId));
+    }
 }

@@ -12,9 +12,7 @@ import com.example.farmusfarm.domain.challenge.repository.MissionPostImageReposi
 import com.example.farmusfarm.domain.challenge.repository.MissionPostLikeRepository;
 import com.example.farmusfarm.domain.challenge.repository.MissionPostRepository;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
-import com.example.farmusfarm.domain.veggieInfo.openfeign.VeggieInfoFeignClient;
-import com.example.farmusfarm.global.response.ErrorMessage;
-import com.example.farmusfarm.global.response.SuccessMessage;
+import com.example.farmusfarm.domain.veggieInfo.openfeign.CropFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class MissionPostService {
     private final S3Service s3Service;
     private final ChallengeService challengeService;
 
-    private final VeggieInfoFeignClient veggieInfoFeignClient;
+    private final CropFeignClient cropFeignClient;
 
     public CreateMissionPostResponseDto createMissionPost(CreateMissionPostRequestDto requestDto, MultipartFile image) {
         Registration registration = registrationRepository.findById(requestDto.getRegistrationId())
@@ -50,7 +48,7 @@ public class MissionPostService {
         missionPostImageRepository.save(missionPostImage);
 
         // 다음 스텝 불러오기
-        String nextStep = veggieInfoFeignClient.getVeggieInfoStepName(registration.getVeggie().getVeggieInfoId(), savedPost.getStep() + 1).getStepName();
+        String nextStep = cropFeignClient.getVeggieInfoStepName(registration.getVeggie().getVeggieInfoId(), savedPost.getStep() + 1).getStepName();
         registration.updateCurrentStep(nextStep);
         registrationRepository.save(registration);
 
