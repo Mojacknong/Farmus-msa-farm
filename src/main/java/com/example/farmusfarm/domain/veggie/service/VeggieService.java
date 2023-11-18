@@ -2,13 +2,17 @@ package com.example.farmusfarm.domain.veggie.service;
 
 import com.example.farmusfarm.common.Colors;
 import com.example.farmusfarm.common.Utils;
+import com.example.farmusfarm.domain.challenge.entity.Registration;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
+import com.example.farmusfarm.domain.history.dto.req.CreateHistoryDetailRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.req.*;
 import com.example.farmusfarm.domain.veggie.dto.res.*;
+import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Routine;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.RoutineRepository;
 import com.example.farmusfarm.domain.veggie.repository.VeggieRepository;
+import com.example.farmusfarm.domain.veggieInfo.openfeign.CropFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,8 @@ public class VeggieService {
     private final VeggieRepository veggieRepository;
     private final RoutineRepository routineRepository;
     private final RegistrationRepository registrationRepository;
+
+    private final CropFeignClient cropFeignClient;
 
     // 내 채소 추가
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
@@ -124,7 +130,48 @@ public class VeggieService {
         return CheckRoutineResponseDto.of(routine.getId(), routine.getIsDone());
     }
 
+    // 홈파밍 종료
+    public FinishFarmResponseDto finishFarm(FinishFarmRequestDto requestDto, Long userId) {
+        Veggie veggie = getVeggie(requestDto.getVeggieId());
+
+        Registration registration = veggie.getRegistration();
+
+        // 재배 성공
+        if (requestDto.getIsHarvested()) {
+            if (registration != null) {
+                return FinishFarmResponseDto.of(false);
+            }
+            List<CreateHistoryDetailRequestDto.HistoryPost> historyPosts = getHistoryPosts(veggie.getDiaries());
+
+            CreateHistoryDetailRequestDto detailRequestDto = new CreateHistoryDetailRequestDto(
+                    veggie.getVeggieImage(),
+                    veggie.getVeggieNickname(),
+                    "",
+                    veggie.getBirth() + "~" + LocalDate.now(),
+                    historyPosts,
+                    null
+            );
+
+            // 히스토리 생성 요청
+            cropFeignClient.createHistoryDetail(userId, detailRequestDto);
+        } else {
+            if (registration != null) {
+                unregister(registration);
+            }
+        }
+
+        deleteVeggie(requestDto.getVeggieId());
+        return FinishFarmResponseDto.of(true);
+    }
+
     // -------------------- api --------------------
+
+    public List<CreateHistoryDetailRequestDto.HistoryPost> getHistoryPosts(List<Diary> diaries) {
+        return diaries.stream()
+                .map(d -> CreateHistoryDetailRequestDto.HistoryPost.of(
+                        d.getDiaryImages().get(0).getImageUrl(), d.getContent(), Utils.dateTimeFormat(d.getCreatedDate())))
+                .collect(Collectors.toList());
+    }
 
     // 채소 조회
     public Veggie getVeggie(Long veggieId) {
@@ -144,13 +191,6 @@ public class VeggieService {
 
     // 채소 삭제
     public void deleteVeggie(Long veggieId) {
-        Veggie veggie = getVeggie(veggieId);
-
-        // 팜클럽에 참여중 일 경우
-        if (getVeggie(veggieId).getRegistration() != null) {
-            unregister(veggie);
-        }
-
         veggieRepository.deleteById(veggieId);
     }
 
@@ -165,9 +205,10 @@ public class VeggieService {
     }
 
     // 팜클럽 등록 정보 삭제
-    public void unregister(Veggie veggie) {
-        registrationRepository.deleteById(veggie.getRegistration().getId());
-        veggie.unregister();
+    public void unregister(Registration registration) {
+        registration.getVeggie().unregister();
+        registration.getChallenge().getRegistrations().remove(registration);
+        registrationRepository.deleteById(registration.getId());
     }
 
     // 루틴 생성

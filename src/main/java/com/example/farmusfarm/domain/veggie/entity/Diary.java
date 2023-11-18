@@ -35,11 +35,11 @@ public class Diary extends BaseEntity {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    @OneToMany(mappedBy = "diary")
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<DiaryLike> diaryLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "diary")
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<DiaryImage> diaryImages = new ArrayList<>();
 

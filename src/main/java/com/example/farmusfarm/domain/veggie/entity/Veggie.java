@@ -42,14 +42,14 @@ public class Veggie extends BaseEntity {
     @Column(nullable = false)
     private LocalDate birth;
 
-    @OneToMany(mappedBy = "veggie")
+    @OneToMany(mappedBy = "veggie", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<Routine> routines = new ArrayList<>();
 
-    @OneToOne(mappedBy = "veggie")
+    @OneToOne(mappedBy = "veggie", cascade = CascadeType.REMOVE)
     private Registration registration;
 
-    @OneToMany(mappedBy = "veggie")
+    @OneToMany(mappedBy = "veggie", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<Diary> diaries = new ArrayList<>();
 

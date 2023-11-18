@@ -2,7 +2,6 @@ package com.example.farmusfarm.domain.challenge.service;
 
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateChallengeRequestDto;
-import com.example.farmusfarm.domain.challenge.dto.req.CreateRegistrationRequestDto;
 import com.example.farmusfarm.domain.challenge.dto.res.*;
 import com.example.farmusfarm.domain.challenge.entity.Challenge;
 import com.example.farmusfarm.domain.challenge.entity.MissionPost;
@@ -16,7 +15,7 @@ import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
 import com.example.farmusfarm.domain.veggie.repository.VeggieRepository;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepNameResponseDto;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.VeggieInfoResponseDto;
-import com.example.farmusfarm.domain.veggieInfo.openfeign.VeggieInfoFeignClient;
+import com.example.farmusfarm.domain.veggieInfo.openfeign.CropFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,13 +35,13 @@ public class ChallengeService {
     private final DiaryRepository diaryRepository;
     private final VeggieRepository veggieRepository;
 
-    private final VeggieInfoFeignClient veggieInfoFeignClient;
+    private final CropFeignClient cropFeignClient;
 
     // 챌린지 생성
     public CreateChallengeResponseDto createChallenge(Long userId, CreateChallengeRequestDto requestDto) {
 
         // 채소 정보 가져오기
-        VeggieInfoResponseDto veggieInfo = veggieInfoFeignClient.getVeggieInfo(requestDto.getVeggieInfoId());
+        VeggieInfoResponseDto veggieInfo = cropFeignClient.getVeggieInfo(requestDto.getVeggieInfoId());
 
         // 챌린지 생성
         Challenge newChallenge = Challenge.createChallenge(
@@ -75,7 +74,7 @@ public class ChallengeService {
 
         validateRegistration(veggieId, challengeId);
         // 첫 미션 명 불러오기
-        String mission = veggieInfoFeignClient.getVeggieInfoStepName(veggie.getVeggieInfoId(), 0).getStepName();
+        String mission = cropFeignClient.getVeggieInfoStepName(veggie.getVeggieInfoId(), 0).getStepName();
 
         Registration registration = Registration.createRegistration(userId, mission, challenge, veggie);
         Registration savedRegistration = registrationRepository.save(registration);
@@ -216,7 +215,7 @@ public class ChallengeService {
         // 유저 정보를 가져옴 (이미지, 닉네임)
 
         return diaryList.stream().map(d -> GetDiaryResponseDto.of(
-                "", "", d.getDiaryImages().get(0).getImageUrl(), d.getContent(), d.getCreatedDate())
+                "", "", d.getDiaryImages().get(0).getImageUrl(), d.getContent(), Utils.dateTimeFormat(d.getCreatedDate()))
         ).collect(Collectors.toList());
     }
 
@@ -322,6 +321,6 @@ public class ChallengeService {
 
     public GetStepNameResponseDto test() {
         log.info("test");
-        return veggieInfoFeignClient.getVeggieInfoStepName("65550000f986782347487451", 0);
+        return cropFeignClient.getVeggieInfoStepName("65550000f986782347487451", 0);
     }
 }
