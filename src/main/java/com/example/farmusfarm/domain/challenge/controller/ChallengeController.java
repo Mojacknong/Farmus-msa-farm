@@ -20,29 +20,26 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/challenge")
+@RequestMapping("/api/farmclub")
 public class ChallengeController {
 
     private final ChallengeService challengeService;
     private final MissionPostService missionPostService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final DiaryService diaryService;
 
     @PostMapping
     public BaseResponseDto<?> createChallenge(
-            HttpServletRequest request,
+            @RequestHeader("user") Long userId,
             @RequestBody CreateChallengeRequestDto requestDto
             ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.CREATED, challengeService.createChallenge(userId, requestDto));
     }
 
     @PostMapping("/register")
     public BaseResponseDto<?> createRegistration(
-            HttpServletRequest request,
+            @RequestHeader("user") Long userId,
             @RequestBody CreateRegistrationRequestDto requestDto
     ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.CREATED, challengeService.createRegistration(userId, requestDto.getVeggieId(), requestDto.getChallengeId()));
     }
 
@@ -63,28 +60,25 @@ public class ChallengeController {
 
     @GetMapping("/{challengeId}")
     public BaseResponseDto<?> getChallengeDetail(
-            HttpServletRequest request,
+            @RequestHeader("user") Long userId,
             @PathVariable Long challengeId
     ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getChallengeDetail(challengeId, userId));
     }
 
     @PostMapping("/mission/{id}")
     public BaseResponseDto<?> likeMissionPost(
-            HttpServletRequest request,
+            @RequestHeader("user") Long userId,
             @PathVariable Long id
     ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.likeMissionPost(userId, id));
     }
 
     @PostMapping("/diary/{id}")
     public BaseResponseDto<?> likeDiary(
-            HttpServletRequest request,
+            @RequestHeader("user") Long userId,
             @PathVariable Long id
     ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, diaryService.likeDiary(id, userId));
     }
 

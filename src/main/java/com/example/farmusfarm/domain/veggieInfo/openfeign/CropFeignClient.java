@@ -9,7 +9,7 @@ import com.example.farmusfarm.domain.veggieInfo.dto.res.VeggieInfoResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(url = "http://localhost:8082", name = "crop")
+@FeignClient("crop-service")
 public interface CropFeignClient {
 
     @GetMapping(value = "/api/crop/info/{id}", consumes = "application/json")
