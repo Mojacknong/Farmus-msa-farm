@@ -1,4 +1,4 @@
-package com.example.farmusfarm.domain.history.dto.res;
+package com.example.farmusfarm.domain.veggieInfo.dto.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

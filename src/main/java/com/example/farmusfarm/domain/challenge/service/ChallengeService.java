@@ -9,6 +9,7 @@ import com.example.farmusfarm.domain.challenge.entity.MissionPost;
 import com.example.farmusfarm.domain.challenge.entity.Registration;
 import com.example.farmusfarm.domain.challenge.repository.ChallengeRepository;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
+import com.example.farmusfarm.domain.user.openfeign.UserFeignClient;
 import com.example.farmusfarm.domain.veggie.dto.res.GetDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
@@ -37,6 +38,7 @@ public class ChallengeService {
     private final VeggieRepository veggieRepository;
 
     private final CropFeignClient cropFeignClient;
+    private final UserFeignClient userFeignClient;
 
     // 챌린지 생성
     public CreateChallengeResponseDto createChallenge(Long userId, CreateChallengeRequestDto requestDto) {

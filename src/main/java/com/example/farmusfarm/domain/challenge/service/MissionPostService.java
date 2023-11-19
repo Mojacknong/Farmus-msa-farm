@@ -5,12 +5,14 @@ import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateMissionPostRequestDto;
 import com.example.farmusfarm.domain.challenge.dto.res.CompleteChallengeResponseDto;
 import com.example.farmusfarm.domain.challenge.dto.res.CreateMissionPostResponseDto;
+import com.example.farmusfarm.domain.challenge.dto.res.GetMissionPostResponseDto;
 import com.example.farmusfarm.domain.challenge.dto.res.LikeMissionPostResponseDto;
 import com.example.farmusfarm.domain.challenge.entity.*;
 import com.example.farmusfarm.domain.challenge.repository.*;
-import com.example.farmusfarm.domain.history.dto.req.CreateHistoryClubDetailRequestDto;
+import com.example.farmusfarm.domain.user.dto.res.UserInfoDto;
+import com.example.farmusfarm.domain.user.openfeign.UserFeignClient;
+import com.example.farmusfarm.domain.veggieInfo.dto.req.CreateHistoryClubDetailRequestDto;
 import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
-import com.example.farmusfarm.domain.veggie.repository.VeggieRepository;
 import com.example.farmusfarm.domain.veggieInfo.openfeign.CropFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +40,7 @@ public class MissionPostService {
     private final S3Service s3Service;
 
     private final CropFeignClient cropFeignClient;
+    private final UserFeignClient userFeignClient;
 
     public CreateMissionPostResponseDto createMissionPost(CreateMissionPostRequestDto requestDto, MultipartFile image) {
         Registration registration = registrationRepository.findById(requestDto.getRegistrationId())
@@ -127,5 +131,38 @@ public class MissionPostService {
         int diary = diaryRepository.findAllByChallengeIdAndVeggieId(challenge.getId(), registration.getVeggie().getId()).size();
 
         return CompleteChallengeResponseDto.of(veggieId , challenge.getImageUrl(), challenge.getChallengeName(), day, mission, diary);
+    }
+
+    public List<GetMissionPostResponseDto> getMissionPosts(Long challengeId, int stepNum) {
+
+        List<UserInfoDto> users = userFeignClient.getAllUser().getData().getAllUserDtoList();
+        log.info("users: {}", users);
+
+        // users를 통해 id : nickname 해시맵 만들기
+        HashMap<Long, String> nicknameMap = new HashMap<>();
+        for (UserInfoDto user : users) {
+            nicknameMap.put(user.getId(), user.getNickName());
+        }
+        HashMap<Long, String> imageMap = new HashMap<>();
+        for (UserInfoDto user : users) {
+            imageMap.put(user.getId(), user.getImageUrl());
+        }
+
+        List<MissionPost> missionPosts = missionPostRepository.findAllByChallengeIdAndStep(challengeId, stepNum);
+        return streamMissionPosts(missionPosts, nicknameMap, imageMap);
+    }
+
+    public List<GetMissionPostResponseDto> streamMissionPosts(List<MissionPost> missionPosts, HashMap<Long, String> nicknameMap, HashMap<Long, String> imageMap) {
+        return missionPosts.stream()
+                .map(missionPost -> GetMissionPostResponseDto.of(
+                        missionPost.getId(),
+                        imageMap.get(missionPost.getRegistration().getUserId()),
+                        nicknameMap.get(missionPost.getRegistration().getUserId()),
+                        Utils.dateTimeFormat(missionPost.getCreatedDate()),
+                        missionPost.getMissionPostImages().get(0).getImageUrl(),
+                        missionPost.getContent(),
+                        missionPost.getMissionPostLikes().size()
+                ))
+                .collect(Collectors.toList());
     }
 }

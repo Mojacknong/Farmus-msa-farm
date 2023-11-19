@@ -1,9 +1,9 @@
 package com.example.farmusfarm.domain.veggieInfo.openfeign;
 
-import com.example.farmusfarm.domain.history.dto.req.CreateHistoryClubDetailRequestDto;
-import com.example.farmusfarm.domain.history.dto.req.CreateHistoryDetailRequestDto;
-import com.example.farmusfarm.domain.history.dto.res.CreateHistoryClubDetailResponseDto;
-import com.example.farmusfarm.domain.history.dto.res.CreateHistoryDetailResponseDto;
+import com.example.farmusfarm.domain.veggieInfo.dto.req.CreateHistoryClubDetailRequestDto;
+import com.example.farmusfarm.domain.veggieInfo.dto.req.CreateHistoryDetailRequestDto;
+import com.example.farmusfarm.domain.veggieInfo.dto.res.CreateHistoryClubDetailResponseDto;
+import com.example.farmusfarm.domain.veggieInfo.dto.res.CreateHistoryDetailResponseDto;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepNameResponseDto;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.VeggieInfoResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
