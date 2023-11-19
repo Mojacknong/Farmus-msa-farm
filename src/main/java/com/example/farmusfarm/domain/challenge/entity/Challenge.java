@@ -82,7 +82,7 @@ public class Challenge extends BaseEntity {
         diaries.add(diary);
     }
 
-    public void setStartedAt(String startedAt) {
-        this.startedAt = LocalDate.parse(startedAt);
+    public void setStartedAt(LocalDate startedAt) {
+        this.startedAt = startedAt;
     }
 }

@@ -7,11 +7,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @Getter
-public class CreateMissionPostResponseDto {
+public class CompleteChallengeResponseDto {
 
-    private Long registrationId;
-    private String challengeName;
-    private int step;
+    private Long veggieId;
+
     private String image;
-    private Boolean isEnd;
+    private String challengeName;
+
+    private int day;
+    private int mission;
+    private int diary;
 }
