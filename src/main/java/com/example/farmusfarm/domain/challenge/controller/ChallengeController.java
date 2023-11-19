@@ -42,11 +42,17 @@ public class ChallengeController {
 
     @PostMapping("/mission")
     public BaseResponseDto<?> createMissionPost(
-            @RequestHeader("user") Long userId,
             @RequestPart("content") CreateMissionPostRequestDto requestDto,
             @RequestPart("image") MultipartFile image
     ) {
-        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(userId, requestDto, image));
+        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(requestDto, image));
+    }
+
+    @GetMapping
+    public BaseResponseDto<?> getMyChallengeList(
+            @RequestHeader("user") Long userId
+            ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getMyChallengeList(userId));
     }
 
     @PostMapping("/search")
@@ -70,6 +76,14 @@ public class ChallengeController {
             @RequestBody FinishChallengeRequestDto requestDto
             ) {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.finishChallenge(userId, requestDto));
+    }
+
+    @DeleteMapping("/complete")
+    public BaseResponseDto<?> completeChallenge(
+            @RequestHeader("user") Long userId,
+            @RequestBody CompleteChallengeRequestDto requestDto
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.completeChallenge(requestDto.getRegistrationId(), userId));
     }
 
     @PostMapping("/mission/{id}")

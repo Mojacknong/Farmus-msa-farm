@@ -12,4 +12,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     // 챌린지 아이디로 전체 일기 조회
     List<Diary> findAllByChallengeId(Long challengeId);
+
+    // 챌린지 아이디와 채소 아이디로 일기 조회
+    List<Diary> findAllByChallengeIdAndVeggieId(Long challengeId, Long veggieId);
 }

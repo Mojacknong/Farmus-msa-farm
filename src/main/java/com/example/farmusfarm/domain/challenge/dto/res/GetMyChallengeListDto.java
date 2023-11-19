@@ -11,4 +11,5 @@ public class GetMyChallengeListDto {
 
     private Long challengeId;
     private String image;
+    private String grayImage;
 }
