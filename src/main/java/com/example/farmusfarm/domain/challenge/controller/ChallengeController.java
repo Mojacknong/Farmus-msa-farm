@@ -79,6 +79,13 @@ public class ChallengeController {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.getMissionPosts(challengeId, stepNum));
     }
 
+    @GetMapping("/diary/{challengeId}")
+    public BaseResponseDto<?> getDiaryPostList(
+            @PathVariable Long challengeId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.getDiaryPosts(challengeId));
+    }
+
     @DeleteMapping
     public BaseResponseDto<?> finishChallenge(
             @RequestHeader("user") Long userId,

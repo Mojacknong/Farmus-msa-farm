@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @Getter
-public class GetMissionPostResponseDto {
+public class GetFarmClubPostResponseDto {
 
     private Long postId;
 

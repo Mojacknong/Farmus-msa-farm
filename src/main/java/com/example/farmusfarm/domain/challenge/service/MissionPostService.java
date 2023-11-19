@@ -5,12 +5,13 @@ import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateMissionPostRequestDto;
 import com.example.farmusfarm.domain.challenge.dto.res.CompleteChallengeResponseDto;
 import com.example.farmusfarm.domain.challenge.dto.res.CreateMissionPostResponseDto;
-import com.example.farmusfarm.domain.challenge.dto.res.GetMissionPostResponseDto;
+import com.example.farmusfarm.domain.challenge.dto.res.GetFarmClubPostResponseDto;
 import com.example.farmusfarm.domain.challenge.dto.res.LikeMissionPostResponseDto;
 import com.example.farmusfarm.domain.challenge.entity.*;
 import com.example.farmusfarm.domain.challenge.repository.*;
 import com.example.farmusfarm.domain.user.dto.res.UserInfoDto;
 import com.example.farmusfarm.domain.user.openfeign.UserFeignClient;
+import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggieInfo.dto.req.CreateHistoryClubDetailRequestDto;
 import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
 import com.example.farmusfarm.domain.veggieInfo.openfeign.CropFeignClient;
@@ -133,7 +134,7 @@ public class MissionPostService {
         return CompleteChallengeResponseDto.of(veggieId , challenge.getImageUrl(), challenge.getChallengeName(), day, mission, diary);
     }
 
-    public List<GetMissionPostResponseDto> getMissionPosts(Long challengeId, int stepNum) {
+    public List<GetFarmClubPostResponseDto> getMissionPosts(Long challengeId, int stepNum) {
 
         List<UserInfoDto> users = userFeignClient.getAllUser().getData().getAllUserDtoList();
         log.info("users: {}", users);
@@ -152,9 +153,9 @@ public class MissionPostService {
         return streamMissionPosts(missionPosts, nicknameMap, imageMap);
     }
 
-    public List<GetMissionPostResponseDto> streamMissionPosts(List<MissionPost> missionPosts, HashMap<Long, String> nicknameMap, HashMap<Long, String> imageMap) {
+    public List<GetFarmClubPostResponseDto> streamMissionPosts(List<MissionPost> missionPosts, HashMap<Long, String> nicknameMap, HashMap<Long, String> imageMap) {
         return missionPosts.stream()
-                .map(missionPost -> GetMissionPostResponseDto.of(
+                .map(missionPost -> GetFarmClubPostResponseDto.of(
                         missionPost.getId(),
                         imageMap.get(missionPost.getRegistration().getUserId()),
                         nicknameMap.get(missionPost.getRegistration().getUserId()),
@@ -162,6 +163,39 @@ public class MissionPostService {
                         missionPost.getMissionPostImages().get(0).getImageUrl(),
                         missionPost.getContent(),
                         missionPost.getMissionPostLikes().size()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<GetFarmClubPostResponseDto> getDiaryPosts(Long challengeId) {
+
+        List<UserInfoDto> users = userFeignClient.getAllUser().getData().getAllUserDtoList();
+        log.info("users: {}", users);
+
+        // users를 통해 id : nickname 해시맵 만들기
+        HashMap<Long, String> nicknameMap = new HashMap<>();
+        for (UserInfoDto user : users) {
+            nicknameMap.put(user.getId(), user.getNickName());
+        }
+        HashMap<Long, String> imageMap = new HashMap<>();
+        for (UserInfoDto user : users) {
+            imageMap.put(user.getId(), user.getImageUrl());
+        }
+
+        List<Diary> diaryPosts = diaryRepository.findAllByChallengeId(challengeId);
+        return streamDiaryPosts(diaryPosts, nicknameMap, imageMap);
+    }
+
+    public List<GetFarmClubPostResponseDto> streamDiaryPosts(List<Diary> diaryPosts, HashMap<Long, String> nicknameMap, HashMap<Long, String> imageMap) {
+        return diaryPosts.stream()
+                .map(diaryPost -> GetFarmClubPostResponseDto.of(
+                        diaryPost.getId(),
+                        imageMap.get(diaryPost.getVeggie().getUserId()),
+                        nicknameMap.get(diaryPost.getVeggie().getUserId()),
+                        Utils.dateTimeFormat(diaryPost.getCreatedDate()),
+                        diaryPost.getDiaryImages().get(0).getImageUrl(),
+                        diaryPost.getContent(),
+                        diaryPost.getDiaryLikes().size()
                 ))
                 .collect(Collectors.toList());
     }
