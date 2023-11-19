@@ -2,10 +2,7 @@ package com.example.farmusfarm.domain.challenge.controller;
 
 import com.example.farmusfarm.common.JwtTokenProvider;
 import com.example.farmusfarm.common.S3Service;
-import com.example.farmusfarm.domain.challenge.dto.req.CreateChallengeRequestDto;
-import com.example.farmusfarm.domain.challenge.dto.req.CreateMissionPostRequestDto;
-import com.example.farmusfarm.domain.challenge.dto.req.CreateRegistrationRequestDto;
-import com.example.farmusfarm.domain.challenge.dto.req.SearchChallengeListRequestDto;
+import com.example.farmusfarm.domain.challenge.dto.req.*;
 import com.example.farmusfarm.domain.challenge.service.ChallengeService;
 import com.example.farmusfarm.domain.challenge.service.MissionPostService;
 import com.example.farmusfarm.domain.veggie.service.DiaryService;
@@ -45,13 +42,14 @@ public class ChallengeController {
 
     @PostMapping("/mission")
     public BaseResponseDto<?> createMissionPost(
+            @RequestHeader("user") Long userId,
             @RequestPart("content") CreateMissionPostRequestDto requestDto,
             @RequestPart("image") MultipartFile image
     ) {
-        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(requestDto, image));
+        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(userId, requestDto, image));
     }
 
-    @GetMapping("")
+    @PostMapping("/search")
     public BaseResponseDto<?> searchChallengeList(
             @RequestBody SearchChallengeListRequestDto requestDto
             ) {
@@ -64,6 +62,14 @@ public class ChallengeController {
             @PathVariable Long challengeId
     ) {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getChallengeDetail(challengeId, userId));
+    }
+
+    @DeleteMapping
+    public BaseResponseDto<?> finishChallenge(
+            @RequestHeader("user") Long userId,
+            @RequestBody FinishChallengeRequestDto requestDto
+            ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.finishChallenge(userId, requestDto));
     }
 
     @PostMapping("/mission/{id}")

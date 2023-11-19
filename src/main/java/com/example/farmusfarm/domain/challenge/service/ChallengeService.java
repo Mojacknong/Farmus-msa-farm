@@ -83,8 +83,16 @@ public class ChallengeService {
         return CreateRegistrationResponseDto.of(savedRegistration.getId());
     }
 
-    public FinishChallengeResponseDto finishChallenge(FinishChallengeRequestDto requestDto) {
-        
+    public FinishChallengeResponseDto finishChallenge(Long userId, FinishChallengeRequestDto requestDto) {
+        Registration registration = getUserRegistration(userId, requestDto.getChallengeId());
+
+        // 채소를 계속 재배할 경우 등록 정보만 삭제
+        if (requestDto.getIsContinue()) {
+            registrationRepository.delete(registration);
+        } else {
+            // 채소를 재배하지 않을 경우 챌린지 종료
+            veggieRepository.delete(registration.getVeggie());
+        }
 
         return FinishChallengeResponseDto.of(true);
     }
