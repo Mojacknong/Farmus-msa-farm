@@ -107,28 +107,9 @@ public class ChallengeService {
 
     }
 
-    // 챌린지 종료
-    public DeleteRegistrationResponseDto deleteRegistration(Long veggieId, Long challengeId) {
-        Registration registration = getVeggieRegistration(veggieId, challengeId);
-
-        registrationRepository.delete(registration);
-
-        return DeleteRegistrationResponseDto.of(registration.getId());
-    }
-
-    // 유저 별 전체 챌린지 조회
-    public List<Registration> getUserRegistrationList(Long userId) {
-        return registrationRepository.findAllByUserId(userId);
-    }
-
     // 유저 별 등록 정보 조회
     public Registration getUserRegistration(Long userId, Long challengeId) {
         return registrationRepository.findByUserIdAndChallengeId(userId, challengeId)
-                .orElseThrow(() -> new IllegalArgumentException("등록 정보가 존재하지 않습니다."));
-    }
-
-    public Registration getVeggieRegistration(Long veggieId, Long challengeId) {
-        return registrationRepository.findByVeggieIdAndChallengeId(veggieId, challengeId)
                 .orElseThrow(() -> new IllegalArgumentException("등록 정보가 존재하지 않습니다."));
     }
 
@@ -305,7 +286,7 @@ public class ChallengeService {
                 getStatusCount(challenge.getStartedAt()),
                 null,
                 0,
-                "",
+                "준비물을 챙겨요",
                 "",
                 new ArrayList<String>(),
                 null

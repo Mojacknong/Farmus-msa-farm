@@ -114,4 +114,11 @@ public class VeggieController {
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.finishFarm(requestDto, userId));
     }
+
+    @DeleteMapping("/{userId}")
+    public void deleteAllVeggies(
+            @PathVariable Long userId
+    ) {
+        veggieService.deleteAllVeggies(userId);
+    }
 }

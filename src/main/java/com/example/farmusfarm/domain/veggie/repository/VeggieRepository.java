@@ -13,4 +13,7 @@ public interface VeggieRepository extends JpaRepository<Veggie, Long> {
     List<Long> findAllVeggiesIdByUserId(Long userId);
 
     List<Veggie> findAllByUserId(Long userId);
+
+    // 유저 id로 채소 전부 삭제
+    void deleteAllByUserId(Long userId);
 }

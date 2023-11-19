@@ -164,6 +164,10 @@ public class VeggieService {
         return FinishFarmResponseDto.of(true);
     }
 
+    public void deleteAllVeggies(Long userId) {
+        veggieRepository.deleteAllByUserId(userId);
+    }
+
     // -------------------- api --------------------
 
     public List<CreateHistoryDetailRequestDto.HistoryPost> getHistoryPosts(List<Diary> diaries) {
