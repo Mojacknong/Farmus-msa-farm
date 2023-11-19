@@ -57,9 +57,10 @@ public class ChallengeController {
 
     @PostMapping("/search")
     public BaseResponseDto<?> searchChallengeList(
+            @RequestHeader("user") Long userId,
             @RequestBody SearchChallengeListRequestDto requestDto
             ) {
-        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.searchChallengeList(requestDto.getDifficulties(), requestDto.getStatus(), requestDto.getKeyword()));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.searchChallengeList(userId, requestDto.getDifficulties(), requestDto.getStatus(), requestDto.getKeyword()));
     }
 
     @GetMapping("/{challengeId}")

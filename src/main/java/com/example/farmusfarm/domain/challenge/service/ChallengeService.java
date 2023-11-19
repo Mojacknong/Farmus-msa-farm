@@ -119,7 +119,7 @@ public class ChallengeService {
     }
 
     // 전체 챌린지 목록 검색
-    public List<SearchChallengeResponseDto> searchChallengeList(List<String> difficulties, String status, String keyword) {
+    public List<SearchChallengeResponseDto> searchChallengeList(Long userId, List<String> difficulties, String status, String keyword) {
         List<Challenge> challengeList;
 
         if (difficulties.isEmpty()) {
@@ -138,7 +138,7 @@ public class ChallengeService {
             challengeList = searchByKeyword(challengeList, keyword);
         }
 
-        return streamChallengeListToSearchResult(challengeList);
+        return streamChallengeListToSearchResult(challengeList, userId);
     }
 
     public List<Challenge> searchByKeyword(List<Challenge> challengeList, String keyword) {
@@ -153,14 +153,14 @@ public class ChallengeService {
         // 유저 별 추천 난이도 조회
         String difficulty = "Hard";
 
-        return getChallengeListByDifficulty(difficulty);
+        return getChallengeListByDifficulty(userId, difficulty);
     }
 
     // 난이도 별 챌린지 조회
-    public List<SearchChallengeResponseDto> getChallengeListByDifficulty(String difficulty) {
+    public List<SearchChallengeResponseDto> getChallengeListByDifficulty(Long userId, String difficulty) {
         List<Challenge> challengeList = challengeRepository.findAllByDifficultyIs(difficulty);
 
-        return streamChallengeListToSearchResult(challengeList);
+        return streamChallengeListToSearchResult(challengeList, userId);
     }
 
     private String getStatusMessage(LocalDate statedAt) {
@@ -171,8 +171,10 @@ public class ChallengeService {
         return statedAt == null ? -1 : Utils.compareLocalDate(LocalDate.now(), statedAt);
     }
 
-    private List<SearchChallengeResponseDto> streamChallengeListToSearchResult(List<Challenge> challengeList) {
-        return challengeList.stream().map(c -> {
+    private List<SearchChallengeResponseDto> streamChallengeListToSearchResult(List<Challenge> challengeList, Long userId) {
+        return challengeList.stream()
+                .filter(c -> !checkAlreadyRegistered(userId, c.getId()))
+                .map(c -> {
             String cStatus = getStatusMessage(c.getStartedAt());
 
             return SearchChallengeResponseDto.of(
