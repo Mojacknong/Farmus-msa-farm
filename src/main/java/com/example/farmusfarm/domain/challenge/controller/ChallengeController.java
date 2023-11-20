@@ -41,7 +41,7 @@ public class ChallengeController {
         return BaseResponseDto.of(SuccessMessage.CREATED, challengeService.createRegistration(userId, requestDto.getVeggieId(), requestDto.getChallengeId()));
     }
 
-    @PostMapping(value = "/mission", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping("/mission")
     public BaseResponseDto<?> createMissionPost(
             @RequestParam("registrationId") Long registrationId,
             @RequestParam("content") String content,
