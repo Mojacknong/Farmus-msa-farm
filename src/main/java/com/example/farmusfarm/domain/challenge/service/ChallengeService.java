@@ -16,6 +16,7 @@ import com.example.farmusfarm.domain.veggie.entity.Veggie;
 import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
 import com.example.farmusfarm.domain.veggie.repository.VeggieRepository;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepNameResponseDto;
+import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepsWithTipResponseDto;
 import com.example.farmusfarm.domain.veggieInfo.dto.res.VeggieInfoResponseDto;
 import com.example.farmusfarm.domain.veggieInfo.openfeign.CropFeignClient;
 import lombok.RequiredArgsConstructor;
@@ -101,10 +102,12 @@ public class ChallengeService {
 
     public GetChallengeInfoResponse getChallengeDetail(Long challengeId, Long userId) {
 
+        List<GetStepsWithTipResponseDto> response = cropFeignClient.getStepsWithTip(getChallenge(challengeId).getVeggieInfoId()).getData();
+
         if (checkAlreadyRegistered(userId, challengeId)) {
-            return getMyChallengeInfo(userId, challengeId);
+            return getMyChallengeInfo(userId, challengeId, response);
         } else {
-            return getOtherChallengeInfo(challengeId);
+            return getOtherChallengeInfo(challengeId, response.get(0).getTip());
         }
 
     }
@@ -241,7 +244,7 @@ public class ChallengeService {
     }
 
     // 내 챌린지 정보 조회
-    public GetChallengeInfoResponse getMyChallengeInfo(Long userId, Long challengeId) {
+    public GetChallengeInfoResponse getMyChallengeInfo(Long userId, Long challengeId, List<GetStepsWithTipResponseDto> response) {
         Challenge challenge = getChallenge(challengeId);
         Registration registration = getUserRegistration(userId, challengeId);
         List<String> imageList = new ArrayList<String>();
@@ -253,9 +256,10 @@ public class ChallengeService {
                     }
                 });
 
-        // veggieInfoId로 스텝이랑 도움말 정보 가져오기
+        String tip = response.get(registration.getCurrentStep()).getTip();
 
         return GetChallengeInfoResponse.of(
+                challenge.getVeggieInfoId(),
                 challenge.getChallengeName(),
                 challenge.getVeggieName(),
                 challenge.getDescription(),
@@ -267,14 +271,14 @@ public class ChallengeService {
                 getChallengeAchievement(challengeId, challenge.getMaxStep()),
                 registration.getCurrentStep(),
                 registration.getCurrentStepName(),
-                "",
+                tip,
                 imageList,
                 getDiaryListByChallenge(challengeId)
         );
     }
 
     // 미가입 챌린지 정보 조회
-    public GetChallengeInfoResponse getOtherChallengeInfo(Long challengeId) {
+    public GetChallengeInfoResponse getOtherChallengeInfo(Long challengeId, String tip) {
         Challenge challenge = getChallenge(challengeId);
 
         // veggieInfoId로 스텝이랑 도움말 정보 가져오기
@@ -289,6 +293,7 @@ public class ChallengeService {
         });
 
         return GetChallengeInfoResponse.of(
+                challenge.getVeggieInfoId(),
                 challenge.getChallengeName(),
                 challenge.getVeggieName(),
                 challenge.getDescription(),
@@ -300,7 +305,7 @@ public class ChallengeService {
                 null,
                 0,
                 "준비물을 챙겨요",
-                "",
+                tip,
                 imageList,
                 null
         );
