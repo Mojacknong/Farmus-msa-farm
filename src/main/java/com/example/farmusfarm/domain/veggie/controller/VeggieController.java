@@ -61,6 +61,13 @@ public class VeggieController {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieList(userId));
     }
 
+    @GetMapping("/registration")
+    public BaseResponseDto<?> getMyVeggieListForRegistration(
+            @RequestHeader("user") Long userId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieListForRegistration(userId));
+    }
+
     @GetMapping("/mission")
     public BaseResponseDto<?> getCurrentMissionList(
             @RequestHeader("user") Long userId

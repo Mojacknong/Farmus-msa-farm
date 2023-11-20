@@ -62,7 +62,7 @@ public class ChallengeService {
         Challenge challenge = getChallenge(challengeId);
         Veggie veggie = getVeggie(veggieId);
 
-        validateRegistration(veggieId, challengeId);
+        validateRegistration(userId, challengeId);
 
         Registration registration = Registration.createRegistration(userId, firstMission, challenge, veggie);
         Registration savedRegistration = registrationRepository.save(registration);
@@ -75,7 +75,7 @@ public class ChallengeService {
         Challenge challenge = getChallenge(challengeId);
         Veggie veggie = getVeggie(veggieId);
 
-        validateRegistration(veggieId, challengeId);
+        validateRegistration(userId, challengeId);
         // 첫 미션 명 불러오기
         String mission = cropFeignClient.getVeggieInfoStepName(veggie.getVeggieInfoId(), 0).getStepName();
 

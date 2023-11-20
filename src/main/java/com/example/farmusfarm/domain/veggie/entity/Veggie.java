@@ -31,6 +31,9 @@ public class Veggie extends BaseEntity {
     private String veggieInfoId;
 
     @Column(nullable = false)
+    private String veggieName;
+
+    @Column(nullable = false)
     private String veggieNickname;
 
     @Column(nullable = false)

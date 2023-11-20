@@ -78,6 +78,19 @@ public class VeggieService {
         return GetMyVeggieListDto.of(userNickname, result);
     }
 
+    public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId) {
+
+        List<Veggie> veggieList =  veggieRepository.findAllByUserId(userId);
+
+        return veggieList.stream()
+                .filter(v -> v.getRegistration() == null)
+                .map(v -> GetRegistrationVeggieListResponseDto.of(
+                        v.getId(),
+                        v.getVeggieName(),
+                        v.getVeggieNickname()
+                )).collect(Collectors.toList());
+    }
+
     // 유저 별 모든 현재 미션 조회
     public List<GetCurrentMissionDto> getCurrentMissionList(Long userId) {
         List<Veggie> veggieList = getVeggieList(userId);
