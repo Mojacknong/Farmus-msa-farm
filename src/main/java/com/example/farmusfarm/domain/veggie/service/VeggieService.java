@@ -40,7 +40,7 @@ public class VeggieService {
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
         // 채소 존재 여부 확인 -> OpenFeign
         // 채소 생성
-        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getVeggieInfoId(), requestDto.getNickname(), requestDto.getVeggieImage(), requestDto.getBirth(), getRandomColorCode());
+        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getVeggieInfoId(), requestDto.getVeggieName(), requestDto.getNickname(), requestDto.getVeggieImage(), requestDto.getBirth(), getRandomColorCode());
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
@@ -76,6 +76,19 @@ public class VeggieService {
                 .collect(Collectors.toList());
 
         return GetMyVeggieListDto.of(userNickname, result);
+    }
+
+    public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId) {
+
+        List<Veggie> veggieList =  veggieRepository.findAllByUserId(userId);
+
+        return veggieList.stream()
+                .filter(v -> v.getRegistration() == null)
+                .map(v -> GetRegistrationVeggieListResponseDto.of(
+                        v.getId(),
+                        v.getVeggieName(),
+                        v.getVeggieNickname()
+                )).collect(Collectors.toList());
     }
 
     // 유저 별 모든 현재 미션 조회
