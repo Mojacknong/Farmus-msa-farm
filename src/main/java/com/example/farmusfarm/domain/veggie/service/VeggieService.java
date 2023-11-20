@@ -114,6 +114,11 @@ public class VeggieService {
         //return veggieList.stream().map(v -> getRoutineInfo(v, date)).collect(Collectors.toList());
     }
 
+    public List<GetDayRoutinesResponseDto> getDayRoutines(Long userId, LocalDate date) {
+        List<Veggie> veggieList = getVeggieList(userId);
+        return veggieList.stream().map(v -> getRoutineInfo(v, date)).collect(Collectors.toList());
+    }
+
     // 루틴 수정
     public UpdateRoutineResponseDto updateRoutine(UpdateRoutineRequestDto requestDto) {
         Routine routine = getRoutine(requestDto.getRoutineId());

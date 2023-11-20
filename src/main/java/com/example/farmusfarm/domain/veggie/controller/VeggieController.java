@@ -24,10 +24,9 @@ public class VeggieController {
 
     @PostMapping("")
     public BaseResponseDto<?> createVeggie(
-            HttpServletRequest request,
+            @RequestHeader("user") Long userId,
             @RequestBody CreateVeggieRequestDto requestDto
             ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.CREATED, veggieService.createVeggie(userId, requestDto));
     }
 
@@ -56,26 +55,32 @@ public class VeggieController {
     }
 
     @GetMapping("")
-    public BaseResponseDto<?> getMyVeggieList(HttpServletRequest request) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
+    public BaseResponseDto<?> getMyVeggieList(
+            @RequestHeader("user") Long userId
+    ) {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieList(userId));
     }
 
     @GetMapping("/mission")
     public BaseResponseDto<?> getCurrentMissionList(
-            HttpServletRequest request
+            @RequestHeader("user") Long userId
     ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getCurrentMissionList(userId));
     }
 
     @GetMapping("/routine")
-    public BaseResponseDto<?> getRoutineList(
-            HttpServletRequest request,
+    public BaseResponseDto<?> getMonthRoutineList(
+            @RequestHeader("user") Long userId,
             @RequestParam String date
     ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMonthRoutines(userId, LocalDate.parse(date)));
+    }
+
+    @GetMapping("/routine/today")
+    public BaseResponseDto<?> getTodayRoutineList(
+            @RequestHeader("user") Long userId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getDayRoutines(userId, LocalDate.now()));
     }
 
     @PatchMapping("/routine")
@@ -108,10 +113,9 @@ public class VeggieController {
 
     @DeleteMapping
     public BaseResponseDto<?> deleteVeggie(
-            HttpServletRequest request,
+            @RequestHeader("user") Long userId,
             @RequestBody FinishFarmRequestDto requestDto
     ) {
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(request));
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.finishFarm(requestDto, userId));
     }
 
