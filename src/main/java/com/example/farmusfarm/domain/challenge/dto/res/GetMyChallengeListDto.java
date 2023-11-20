@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class GetMyChallengeListDto {
 
     private Long challengeId;
+    private Long registrationId;
     private String image;
     private String grayImage;
 }

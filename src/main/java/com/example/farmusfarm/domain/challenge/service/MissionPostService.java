@@ -43,11 +43,11 @@ public class MissionPostService {
     private final CropFeignClient cropFeignClient;
     private final UserFeignClient userFeignClient;
 
-    public CreateMissionPostResponseDto createMissionPost(CreateMissionPostRequestDto requestDto, MultipartFile image) {
-        Registration registration = registrationRepository.findById(requestDto.getRegistrationId())
+    public CreateMissionPostResponseDto createMissionPost(Long registrationId, String content, MultipartFile image) {
+        Registration registration = registrationRepository.findById(registrationId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 등록입니다."));
 
-        MissionPost newPost = MissionPost.createMissionPost(requestDto.getContent(), registration);
+        MissionPost newPost = MissionPost.createMissionPost(content, registration);
         MissionPost savedPost = missionPostRepository.save(newPost);
 
         // 이미지 업로드
