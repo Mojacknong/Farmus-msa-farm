@@ -153,7 +153,7 @@ public class ChallengeService {
     // 추천 챌린지 조회
     public List<SearchChallengeResponseDto> getRecommendedChallengeList(Long userId) {
         // 유저 별 추천 난이도 조회
-        String difficulty = "Hard";
+        String difficulty = userFeignClient.getUserLevel(userId);
 
         return getChallengeListByDifficulty(userId, difficulty);
     }
@@ -328,8 +328,8 @@ public class ChallengeService {
         return registrationRepository.findByUserIdAndChallengeId(userId, challengeId).isPresent();
     }
 
-    public GetStepNameResponseDto test() {
+    public String test(Long userId) {
         log.info("test");
-        return cropFeignClient.getVeggieInfoStepName("65550000f986782347487451", 0);
+        return userFeignClient.getUserLevel(userId);
     }
 }

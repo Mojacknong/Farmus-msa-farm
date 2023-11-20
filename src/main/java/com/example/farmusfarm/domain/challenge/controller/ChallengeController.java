@@ -65,6 +65,13 @@ public class ChallengeController {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.searchChallengeList(userId, requestDto.getDifficulties(), requestDto.getStatus(), requestDto.getKeyword()));
     }
 
+    @GetMapping("/recommendation")
+    public BaseResponseDto<?> getRecommendChallengeList(
+            @RequestHeader("user") Long userId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getRecommendedChallengeList(userId));
+    }
+
     @GetMapping("/{challengeId}")
     public BaseResponseDto<?> getChallengeDetail(
             @RequestHeader("user") Long userId,
@@ -121,7 +128,9 @@ public class ChallengeController {
     }
 
     @GetMapping("/test")
-    public BaseResponseDto<?> test() {
-        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.test());
+    public BaseResponseDto<?> test(
+            @RequestHeader("user") Long userId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.test(userId));
     }
 }
