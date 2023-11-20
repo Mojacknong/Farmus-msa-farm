@@ -12,5 +12,6 @@ import java.util.List;
 public class GetMyVeggieListDto {
 
     private String userNickname;
+    private String level;
     private List<GetVeggieInfoResponse> veggieList;
 }
