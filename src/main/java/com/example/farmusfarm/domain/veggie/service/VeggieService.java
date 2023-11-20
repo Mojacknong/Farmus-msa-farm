@@ -4,7 +4,7 @@ import com.example.farmusfarm.common.Colors;
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.entity.Registration;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
-import com.example.farmusfarm.domain.history.dto.req.CreateHistoryDetailRequestDto;
+import com.example.farmusfarm.domain.veggieInfo.dto.req.CreateHistoryDetailRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.req.*;
 import com.example.farmusfarm.domain.veggie.dto.res.*;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
@@ -112,6 +112,11 @@ public class VeggieService {
         return result;
 
         //return veggieList.stream().map(v -> getRoutineInfo(v, date)).collect(Collectors.toList());
+    }
+
+    public List<GetDayRoutinesResponseDto> getDayRoutines(Long userId, LocalDate date) {
+        List<Veggie> veggieList = getVeggieList(userId);
+        return veggieList.stream().map(v -> getRoutineInfo(v, date)).collect(Collectors.toList());
     }
 
     // 루틴 수정

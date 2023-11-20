@@ -43,7 +43,7 @@ public class DiaryService {
                 .orElseThrow(()-> new IllegalArgumentException("채소가 존재하지 않습니다."));
 
         Diary diary;
-        if (veggie.getRegistration() != null && requestDto.isOpen()) {
+        if (veggie.getRegistration() != null && requestDto.getIsOpen()) {
             diary = Diary.createDiaryWithChallenge(requestDto.getContent(), true, veggie, veggie.getRegistration().getChallenge());
         } else {
             diary = Diary.createDiary(requestDto.getContent(), veggie);

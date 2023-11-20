@@ -57,9 +57,10 @@ public class ChallengeController {
 
     @PostMapping("/search")
     public BaseResponseDto<?> searchChallengeList(
+            @RequestHeader("user") Long userId,
             @RequestBody SearchChallengeListRequestDto requestDto
             ) {
-        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.searchChallengeList(requestDto.getDifficulties(), requestDto.getStatus(), requestDto.getKeyword()));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.searchChallengeList(userId, requestDto.getDifficulties(), requestDto.getStatus(), requestDto.getKeyword()));
     }
 
     @GetMapping("/{challengeId}")
@@ -68,6 +69,21 @@ public class ChallengeController {
             @PathVariable Long challengeId
     ) {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getChallengeDetail(challengeId, userId));
+    }
+
+    @GetMapping("/mission/")
+    public BaseResponseDto<?> getMissionPostList(
+            @RequestParam Long challengeId,
+            @RequestParam int stepNum
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.getMissionPosts(challengeId, stepNum));
+    }
+
+    @GetMapping("/diary/{challengeId}")
+    public BaseResponseDto<?> getDiaryPostList(
+            @PathVariable Long challengeId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.getDiaryPosts(challengeId));
     }
 
     @DeleteMapping

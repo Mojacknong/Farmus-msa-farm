@@ -9,6 +9,7 @@ import com.example.farmusfarm.domain.challenge.entity.MissionPost;
 import com.example.farmusfarm.domain.challenge.entity.Registration;
 import com.example.farmusfarm.domain.challenge.repository.ChallengeRepository;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
+import com.example.farmusfarm.domain.user.openfeign.UserFeignClient;
 import com.example.farmusfarm.domain.veggie.dto.res.GetDiaryResponseDto;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggie.entity.Veggie;
@@ -37,6 +38,7 @@ public class ChallengeService {
     private final VeggieRepository veggieRepository;
 
     private final CropFeignClient cropFeignClient;
+    private final UserFeignClient userFeignClient;
 
     // 챌린지 생성
     public CreateChallengeResponseDto createChallenge(Long userId, CreateChallengeRequestDto requestDto) {
@@ -119,7 +121,7 @@ public class ChallengeService {
     }
 
     // 전체 챌린지 목록 검색
-    public List<SearchChallengeResponseDto> searchChallengeList(List<String> difficulties, String status, String keyword) {
+    public List<SearchChallengeResponseDto> searchChallengeList(Long userId, List<String> difficulties, String status, String keyword) {
         List<Challenge> challengeList;
 
         if (difficulties.isEmpty()) {
@@ -138,7 +140,7 @@ public class ChallengeService {
             challengeList = searchByKeyword(challengeList, keyword);
         }
 
-        return streamChallengeListToSearchResult(challengeList);
+        return streamChallengeListToSearchResult(challengeList, userId);
     }
 
     public List<Challenge> searchByKeyword(List<Challenge> challengeList, String keyword) {
@@ -153,14 +155,14 @@ public class ChallengeService {
         // 유저 별 추천 난이도 조회
         String difficulty = "Hard";
 
-        return getChallengeListByDifficulty(difficulty);
+        return getChallengeListByDifficulty(userId, difficulty);
     }
 
     // 난이도 별 챌린지 조회
-    public List<SearchChallengeResponseDto> getChallengeListByDifficulty(String difficulty) {
+    public List<SearchChallengeResponseDto> getChallengeListByDifficulty(Long userId, String difficulty) {
         List<Challenge> challengeList = challengeRepository.findAllByDifficultyIs(difficulty);
 
-        return streamChallengeListToSearchResult(challengeList);
+        return streamChallengeListToSearchResult(challengeList, userId);
     }
 
     private String getStatusMessage(LocalDate statedAt) {
@@ -171,8 +173,10 @@ public class ChallengeService {
         return statedAt == null ? -1 : Utils.compareLocalDate(LocalDate.now(), statedAt);
     }
 
-    private List<SearchChallengeResponseDto> streamChallengeListToSearchResult(List<Challenge> challengeList) {
-        return challengeList.stream().map(c -> {
+    private List<SearchChallengeResponseDto> streamChallengeListToSearchResult(List<Challenge> challengeList, Long userId) {
+        return challengeList.stream()
+                .filter(c -> !checkAlreadyRegistered(userId, c.getId()))
+                .map(c -> {
             String cStatus = getStatusMessage(c.getStartedAt());
 
             return SearchChallengeResponseDto.of(
@@ -275,6 +279,15 @@ public class ChallengeService {
 
         // veggieInfoId로 스텝이랑 도움말 정보 가져오기
 
+        List<String> imageList = new ArrayList<String>();
+        challenge.getRegistrations().forEach(r -> {
+            for (MissionPost p : r.getMissionPosts()) {
+                if (p.getStep() == 0) {
+                    imageList.add(p.getMissionPostImages().get(0).getImageUrl());
+                }
+            }
+        });
+
         return GetChallengeInfoResponse.of(
                 challenge.getChallengeName(),
                 challenge.getVeggieName(),
@@ -288,7 +301,7 @@ public class ChallengeService {
                 0,
                 "준비물을 챙겨요",
                 "",
-                new ArrayList<String>(),
+                imageList,
                 null
         );
     }

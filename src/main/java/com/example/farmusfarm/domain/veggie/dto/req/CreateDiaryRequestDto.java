@@ -11,5 +11,5 @@ public class CreateDiaryRequestDto {
 
     private Long veggieId;
     private String content;
-    private boolean isOpen;
+    private Boolean isOpen;
 }
