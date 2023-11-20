@@ -33,6 +33,6 @@ public interface CropFeignClient {
     @GetMapping(value = "/api/crop/{id}/info", consumes = "application/json")
     BaseResponseDto<List<GetStepsWithTipResponseDto>> getStepsWithTip(@PathVariable String id);
 
-    @GetMapping(value = "/api/crop/{id}/step", consumes = "application/json")
+    @GetMapping(value = "/api/crop/{id}/steps", consumes = "application/json")
     BaseResponseDto<GetAllStepNameResponseDto> getAllStepName(@PathVariable String id);
 }
