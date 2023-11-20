@@ -73,7 +73,7 @@ public class MissionPostService {
             }
         }
 
-        return CreateMissionPostResponseDto.of(registration.getId(), registration.getChallenge().getChallengeName(), savedPost.getStep(), imageUrl, isEnd);
+        return CreateMissionPostResponseDto.of(registration.getId(), challenge.getChallengeName(), savedPost.getStep(), challenge.getImageUrl(), isEnd);
     }
 
     public LikeMissionPostResponseDto likeMissionPost(Long userId, Long missionPostId) {
