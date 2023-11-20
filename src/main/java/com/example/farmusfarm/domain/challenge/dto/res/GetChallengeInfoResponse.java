@@ -12,6 +12,8 @@ import java.util.List;
 @Getter
 public class GetChallengeInfoResponse {
 
+    private String veggieInfoId;
+
     private String challengeName;
     private String veggieName;
     private String challengeDescription;

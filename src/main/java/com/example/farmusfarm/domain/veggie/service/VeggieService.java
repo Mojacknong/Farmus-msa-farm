@@ -4,6 +4,8 @@ import com.example.farmusfarm.common.Colors;
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.entity.Registration;
 import com.example.farmusfarm.domain.challenge.repository.RegistrationRepository;
+import com.example.farmusfarm.domain.user.dto.res.GetUserLevelAndNicknameResponseDto;
+import com.example.farmusfarm.domain.user.openfeign.UserFeignClient;
 import com.example.farmusfarm.domain.veggieInfo.dto.req.CreateHistoryDetailRequestDto;
 import com.example.farmusfarm.domain.veggie.dto.req.*;
 import com.example.farmusfarm.domain.veggie.dto.res.*;
@@ -35,6 +37,7 @@ public class VeggieService {
     private final RegistrationRepository registrationRepository;
 
     private final CropFeignClient cropFeignClient;
+    private final UserFeignClient userFeignClient;
 
     // 내 채소 추가
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
@@ -66,7 +69,7 @@ public class VeggieService {
         List<Veggie> veggieList = getVeggieList(userId);
 
         // 페인으로 유저 닉네임 가져옴
-        String userNickname = "파머";
+        GetUserLevelAndNicknameResponseDto response = userFeignClient.getUserLevelAndNickname(userId);
         List<GetVeggieInfoResponse> result = veggieList.stream()
                 .map(v -> GetVeggieInfoResponse.of(
                         v.getId(),
@@ -75,7 +78,7 @@ public class VeggieService {
                         Utils.compareLocalDate(LocalDate.now(), v.getBirth())))
                 .collect(Collectors.toList());
 
-        return GetMyVeggieListDto.of(userNickname, result);
+        return GetMyVeggieListDto.of(response.getNickname(), response.getLevel(), result);
     }
 
     public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId) {
