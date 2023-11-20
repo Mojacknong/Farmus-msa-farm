@@ -40,7 +40,7 @@ public class VeggieService {
     public CreateVeggieResponseDto createVeggie(Long userId, CreateVeggieRequestDto requestDto) {
         // 채소 존재 여부 확인 -> OpenFeign
         // 채소 생성
-        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getVeggieInfoId(), requestDto.getNickname(), requestDto.getVeggieImage(), requestDto.getBirth(), getRandomColorCode());
+        Veggie newVeggie = Veggie.createVeggie(userId, requestDto.getVeggieInfoId(), requestDto.getVeggieName(), requestDto.getNickname(), requestDto.getVeggieImage(), requestDto.getBirth(), getRandomColorCode());
         Veggie savedVeggie = veggieRepository.save(newVeggie);
 
         return CreateVeggieResponseDto.of(savedVeggie.getId());
