@@ -10,6 +10,7 @@ import com.example.farmusfarm.domain.veggieInfo.dto.res.GetStepNameResponseDto;
 import com.example.farmusfarm.global.response.BaseResponseDto;
 import com.example.farmusfarm.global.response.SuccessMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,12 +41,13 @@ public class ChallengeController {
         return BaseResponseDto.of(SuccessMessage.CREATED, challengeService.createRegistration(userId, requestDto.getVeggieId(), requestDto.getChallengeId()));
     }
 
-    @PostMapping("/mission")
+    @PostMapping(value = "/mission", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponseDto<?> createMissionPost(
-            @RequestPart("content") CreateMissionPostRequestDto requestDto,
+            @RequestParam("registrationId") Long registrationId,
+            @RequestParam("content") String content,
             @RequestPart("image") MultipartFile image
     ) {
-        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(requestDto, image));
+        return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(registrationId, content, image));
     }
 
     @GetMapping
