@@ -279,6 +279,15 @@ public class ChallengeService {
 
         // veggieInfoId로 스텝이랑 도움말 정보 가져오기
 
+        List<String> imageList = new ArrayList<String>();
+        challenge.getRegistrations().forEach(r -> {
+            for (MissionPost p : r.getMissionPosts()) {
+                if (p.getStep() == 0) {
+                    imageList.add(p.getMissionPostImages().get(0).getImageUrl());
+                }
+            }
+        });
+
         return GetChallengeInfoResponse.of(
                 challenge.getChallengeName(),
                 challenge.getVeggieName(),
@@ -292,7 +301,7 @@ public class ChallengeService {
                 0,
                 "준비물을 챙겨요",
                 "",
-                new ArrayList<String>(),
+                imageList,
                 null
         );
     }
