@@ -80,6 +80,14 @@ public class ChallengeController {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, challengeService.getChallengeDetail(challengeId, userId));
     }
 
+    @GetMapping("/mission/{challengeId}")
+    public BaseResponseDto<?> getMyMissionPostList(
+            @RequestHeader("user") Long userId,
+            @PathVariable Long challengeId
+    ) {
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, missionPostService.getMyMissionPosts(userId, challengeId));
+    }
+
     @GetMapping("/mission/")
     public BaseResponseDto<?> getMissionPostList(
             @RequestParam Long challengeId,

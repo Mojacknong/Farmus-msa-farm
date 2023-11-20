@@ -3,10 +3,7 @@ package com.example.farmusfarm.domain.challenge.service;
 import com.example.farmusfarm.common.S3Service;
 import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.req.CreateMissionPostRequestDto;
-import com.example.farmusfarm.domain.challenge.dto.res.CompleteChallengeResponseDto;
-import com.example.farmusfarm.domain.challenge.dto.res.CreateMissionPostResponseDto;
-import com.example.farmusfarm.domain.challenge.dto.res.GetFarmClubPostResponseDto;
-import com.example.farmusfarm.domain.challenge.dto.res.LikeMissionPostResponseDto;
+import com.example.farmusfarm.domain.challenge.dto.res.*;
 import com.example.farmusfarm.domain.challenge.entity.*;
 import com.example.farmusfarm.domain.challenge.repository.*;
 import com.example.farmusfarm.domain.user.dto.res.UserInfoDto;
@@ -14,6 +11,7 @@ import com.example.farmusfarm.domain.user.openfeign.UserFeignClient;
 import com.example.farmusfarm.domain.veggie.entity.Diary;
 import com.example.farmusfarm.domain.veggieInfo.dto.req.CreateHistoryClubDetailRequestDto;
 import com.example.farmusfarm.domain.veggie.repository.DiaryRepository;
+import com.example.farmusfarm.domain.veggieInfo.dto.res.GetAllStepNameResponseDto;
 import com.example.farmusfarm.domain.veggieInfo.openfeign.CropFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,6 +130,24 @@ public class MissionPostService {
         int diary = diaryRepository.findAllByChallengeIdAndVeggieId(challenge.getId(), registration.getVeggie().getId()).size();
 
         return CompleteChallengeResponseDto.of(veggieId , challenge.getImageUrl(), challenge.getChallengeName(), day, mission, diary);
+    }
+
+    public List<GetMyMissionPostResponseDto> getMyMissionPosts(Long userId, Long challengeId) {
+        Registration registration = registrationRepository.findByUserIdAndChallengeId(userId, challengeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 등록입니다."));
+
+        List<String> allStepName = cropFeignClient.getAllStepName(registration.getVeggie().getVeggieInfoId()).getData().getStepList();
+
+        return registration.getMissionPosts().stream()
+                .map(missionPost -> GetMyMissionPostResponseDto.of(
+                        missionPost.getId(),
+                        missionPost.getStep(),
+                        allStepName.get(missionPost.getStep()),
+                        Utils.dateTimeFormat(missionPost.getCreatedDate()),
+                        missionPost.getMissionPostImages().get(0).getImageUrl(),
+                        missionPost.getContent(),
+                        missionPost.getMissionPostLikes().size()
+                )).collect(Collectors.toList());
     }
 
     public List<GetFarmClubPostResponseDto> getMissionPosts(Long challengeId, int stepNum) {
