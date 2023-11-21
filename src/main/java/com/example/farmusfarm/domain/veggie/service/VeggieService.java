@@ -148,6 +148,16 @@ public class VeggieService {
         Routine routine = getRoutine(requestDto.getRoutineId());
         routine.updateDone();
 
+        if (routine.getPeriod() != 0) {
+            Routine newRoutine = createRoutine(
+                    LocalDate.now().plusDays(routine.getPeriod()).toString(),
+                    routine.getContent(),
+                    routine.getPeriod(),
+                    routine.getVeggie()
+            );
+            routineRepository.save(newRoutine);
+        }
+
         return CheckRoutineResponseDto.of(routine.getId(), routine.getIsDone());
     }
 
