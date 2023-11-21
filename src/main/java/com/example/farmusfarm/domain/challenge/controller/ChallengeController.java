@@ -43,9 +43,9 @@ public class ChallengeController {
 
     @PostMapping("/mission")
     public BaseResponseDto<?> createMissionPost(
+            @RequestPart("image") MultipartFile image,
             @RequestParam("registrationId") Long registrationId,
-            @RequestParam("content") String content,
-            @RequestPart("image") MultipartFile image
+            @RequestParam("content") String content
     ) {
         return BaseResponseDto.of(SuccessMessage.CREATED, missionPostService.createMissionPost(registrationId, content, image));
     }

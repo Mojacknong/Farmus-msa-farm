@@ -39,15 +39,15 @@ public class DiaryService {
     private final S3Service s3Service;
 
     // 일기 생성
-    public CreateDiaryResponseDto createDiary(CreateDiaryRequestDto requestDto, MultipartFile image) {
-        Veggie veggie = veggieRepository.findById(requestDto.getVeggieId())
+    public CreateDiaryResponseDto createDiary(Long veggieId, String content, Boolean isOpen, MultipartFile image) {
+        Veggie veggie = veggieRepository.findById(veggieId)
                 .orElseThrow(()-> new IllegalArgumentException("채소가 존재하지 않습니다."));
 
         Diary diary;
-        if (veggie.getRegistration() != null && requestDto.getIsOpen()) {
-            diary = Diary.createDiaryWithChallenge(requestDto.getContent(), true, veggie, veggie.getRegistration().getChallenge());
+        if (veggie.getRegistration() != null && isOpen) {
+            diary = Diary.createDiaryWithChallenge(content, true, veggie, veggie.getRegistration().getChallenge());
         } else {
-            diary = Diary.createDiary(requestDto.getContent(), veggie);
+            diary = Diary.createDiary(content, veggie);
         }
         Diary newDiary = diaryRepository.save(diary);
 
