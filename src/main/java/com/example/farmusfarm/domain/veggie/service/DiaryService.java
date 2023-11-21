@@ -1,6 +1,7 @@
 package com.example.farmusfarm.domain.veggie.service;
 
 import com.example.farmusfarm.common.S3Service;
+import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.res.LikeMissionPostResponseDto;
 import com.example.farmusfarm.domain.challenge.entity.MissionPost;
 import com.example.farmusfarm.domain.challenge.entity.MissionPostLike;
@@ -60,7 +61,12 @@ public class DiaryService {
     public List<GetMyDiaryResponseDto> getVeggieDiaryList(Long veggieId) {
         List<Diary> diaries = getDiaryByVeggieId(veggieId);
         return diaries.stream()
-                .map(diary -> GetMyDiaryResponseDto.of(diary.getId(), diary.getContent(), diary.getDiaryImages().get(0).getImageUrl()))
+                .map(diary -> GetMyDiaryResponseDto.of(
+                        diary.getId(),
+                        diary.getContent(),
+                        diary.getDiaryImages().get(0).getImageUrl(),
+                        Utils.dateTimeToDateFormat(diary.getCreatedDate())
+                        ))
                 .collect(Collectors.toList());
     }
 
