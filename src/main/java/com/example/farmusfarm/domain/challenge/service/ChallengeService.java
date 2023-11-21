@@ -273,7 +273,7 @@ public class ChallengeService {
                 registration.getCurrentStepName(),
                 tip,
                 imageList,
-                getDiaryListByChallenge(challengeId)
+                true
         );
     }
 
@@ -307,7 +307,7 @@ public class ChallengeService {
                 "준비물을 챙겨요",
                 tip,
                 imageList,
-                null
+                false
         );
     }
 

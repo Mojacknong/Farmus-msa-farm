@@ -30,5 +30,5 @@ public class GetChallengeInfoResponse {
     private String stepTip;
     private List<String> stepImages;
 
-    private List<GetDiaryResponseDto> diaries;
+    private Boolean isRegistered;
 }
