@@ -24,6 +24,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,12 +82,12 @@ public class VeggieService {
         return GetMyVeggieListDto.of(response.getNickname(), response.getLevel(), result);
     }
 
-    public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId) {
+    public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId, String veggieInfoId) {
 
-        List<Veggie> veggieList =  veggieRepository.findAllByUserId(userId);
+        List<Veggie> veggieList = veggieRepository.findAllByUserId(userId);
 
         return veggieList.stream()
-                .filter(v -> v.getRegistration() == null)
+                .filter(v -> v.getRegistration() == null && v.getVeggieInfoId().equals(veggieInfoId))
                 .map(v -> GetRegistrationVeggieListResponseDto.of(
                         v.getId(),
                         v.getVeggieName(),
