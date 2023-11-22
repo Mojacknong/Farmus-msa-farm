@@ -39,10 +39,12 @@ public class VeggieController {
 
     @PostMapping("/diary")
     public BaseResponseDto<?> createDiary(
-            @RequestPart("content") final CreateDiaryRequestDto requestDto,
-            @RequestPart("image") final MultipartFile image
+            @RequestPart("image") final MultipartFile image,
+            @RequestParam("veggieId") final Long veggieId,
+            @RequestParam("content") final String content,
+            @RequestParam("isOpen") final Boolean isOpen
             ) {
-        return BaseResponseDto.of(SuccessMessage.CREATED, diaryService.createDiary(requestDto, image));
+        return BaseResponseDto.of(SuccessMessage.CREATED, diaryService.createDiary(veggieId, content, isOpen, image));
     }
 
 

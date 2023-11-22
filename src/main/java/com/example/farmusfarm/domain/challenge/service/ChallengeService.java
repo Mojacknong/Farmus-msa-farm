@@ -259,6 +259,7 @@ public class ChallengeService {
         String tip = response.get(registration.getCurrentStep()).getTip();
 
         return GetChallengeInfoResponse.of(
+                challengeId,
                 challenge.getVeggieInfoId(),
                 challenge.getChallengeName(),
                 challenge.getVeggieName(),
@@ -273,7 +274,7 @@ public class ChallengeService {
                 registration.getCurrentStepName(),
                 tip,
                 imageList,
-                getDiaryListByChallenge(challengeId)
+                true
         );
     }
 
@@ -293,6 +294,7 @@ public class ChallengeService {
         });
 
         return GetChallengeInfoResponse.of(
+                challengeId,
                 challenge.getVeggieInfoId(),
                 challenge.getChallengeName(),
                 challenge.getVeggieName(),
@@ -307,7 +309,7 @@ public class ChallengeService {
                 "준비물을 챙겨요",
                 tip,
                 imageList,
-                null
+                false
         );
     }
 

@@ -12,4 +12,5 @@ public class GetMyDiaryResponseDto {
     private Long diaryId;
     private String content;
     private String image;
+    private String date;
 }

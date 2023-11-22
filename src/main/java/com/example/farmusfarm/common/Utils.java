@@ -29,4 +29,17 @@ public class Utils {
 
         return month + "/" + day + " " + hour + ":" + minute;
     }
+
+    // mm/dd/yy, hh:mm PM -> yyyy년 mm월 dd일
+    public static String dateTimeToDateFormat(String dateTime) {
+        String[] dateTimeArr = dateTime.split(" ");
+        String[] dateArr = dateTimeArr[0].split("/");
+
+        String month = dateArr[0];
+        String day = dateArr[1];
+        String year = dateArr[2].substring(0, 2);
+
+
+        return "20" + year + "년 " + month + "월 " + day + "일";
+    }
 }

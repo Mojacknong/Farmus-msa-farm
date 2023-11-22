@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 public class GetChallengeInfoResponse {
 
+    private Long challengeId;
     private String veggieInfoId;
 
     private String challengeName;
@@ -30,5 +31,5 @@ public class GetChallengeInfoResponse {
     private String stepTip;
     private List<String> stepImages;
 
-    private List<GetDiaryResponseDto> diaries;
+    private Boolean isRegistered;
 }

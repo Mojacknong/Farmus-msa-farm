@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class CreateRoutineResponseDto {
 
     private Long id;
+    private String date;
+    private String content;
+    private int period;
+    private Boolean isDone;
 }

@@ -1,6 +1,7 @@
 package com.example.farmusfarm.domain.veggie.service;
 
 import com.example.farmusfarm.common.S3Service;
+import com.example.farmusfarm.common.Utils;
 import com.example.farmusfarm.domain.challenge.dto.res.LikeMissionPostResponseDto;
 import com.example.farmusfarm.domain.challenge.entity.MissionPost;
 import com.example.farmusfarm.domain.challenge.entity.MissionPostLike;
@@ -38,15 +39,15 @@ public class DiaryService {
     private final S3Service s3Service;
 
     // 일기 생성
-    public CreateDiaryResponseDto createDiary(CreateDiaryRequestDto requestDto, MultipartFile image) {
-        Veggie veggie = veggieRepository.findById(requestDto.getVeggieId())
+    public CreateDiaryResponseDto createDiary(Long veggieId, String content, Boolean isOpen, MultipartFile image) {
+        Veggie veggie = veggieRepository.findById(veggieId)
                 .orElseThrow(()-> new IllegalArgumentException("채소가 존재하지 않습니다."));
 
         Diary diary;
-        if (veggie.getRegistration() != null && requestDto.getIsOpen()) {
-            diary = Diary.createDiaryWithChallenge(requestDto.getContent(), true, veggie, veggie.getRegistration().getChallenge());
+        if (veggie.getRegistration() != null && isOpen) {
+            diary = Diary.createDiaryWithChallenge(content, true, veggie, veggie.getRegistration().getChallenge());
         } else {
-            diary = Diary.createDiary(requestDto.getContent(), veggie);
+            diary = Diary.createDiary(content, veggie);
         }
         Diary newDiary = diaryRepository.save(diary);
 
@@ -60,7 +61,12 @@ public class DiaryService {
     public List<GetMyDiaryResponseDto> getVeggieDiaryList(Long veggieId) {
         List<Diary> diaries = getDiaryByVeggieId(veggieId);
         return diaries.stream()
-                .map(diary -> GetMyDiaryResponseDto.of(diary.getId(), diary.getContent(), diary.getDiaryImages().get(0).getImageUrl()))
+                .map(diary -> GetMyDiaryResponseDto.of(
+                        diary.getId(),
+                        diary.getContent(),
+                        diary.getDiaryImages().get(0).getImageUrl(),
+                        Utils.dateTimeToDateFormat(diary.getCreatedDate())
+                        ))
                 .collect(Collectors.toList());
     }
 
