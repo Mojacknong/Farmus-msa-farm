@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 public class GetChallengeInfoResponse {
 
+    private Long challengeId;
     private String veggieInfoId;
 
     private String challengeName;

@@ -54,7 +54,7 @@ public class VeggieService {
         Veggie veggie = getVeggie(requestDto.getVeggieId());
         Routine newRoutine = createRoutine(requestDto.getDate(), requestDto.getContent(), 0, veggie);
 
-        return CreateRoutineResponseDto.of(newRoutine.getId());
+        return CreateRoutineResponseDto.of(newRoutine.getId(), newRoutine.getDate().toString(), newRoutine.getContent(), newRoutine.getPeriod(), false);
     }
 
     // 채소 정보 조회
