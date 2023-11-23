@@ -105,7 +105,9 @@ public class VeggieService {
                         v.getVeggieNickname(),
                         v.getRegistration().getCurrentStep(),
                         v.getRegistration().getCurrentStepName(),
-                        v.getColor()))
+                        v.getColor(),
+                        v.getVeggieInfoId()
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -178,7 +180,7 @@ public class VeggieService {
             CreateHistoryDetailRequestDto detailRequestDto = new CreateHistoryDetailRequestDto(
                     veggie.getVeggieImage(),
                     veggie.getVeggieNickname(),
-                    "",
+                    veggie.getVeggieName(),
                     veggie.getBirth() + "~" + LocalDate.now(),
                     historyPosts,
                     null
