@@ -24,6 +24,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,15 +79,15 @@ public class VeggieService {
                         Utils.compareLocalDate(LocalDate.now(), v.getBirth())))
                 .collect(Collectors.toList());
 
-        return GetMyVeggieListDto.of(response.getNickname(), response.getLevel(), result);
+        return GetMyVeggieListDto.of(response.getNickname(), response.getLevel(), response.getMotivation(), result);
     }
 
-    public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId) {
+    public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId, String veggieInfoId) {
 
-        List<Veggie> veggieList =  veggieRepository.findAllByUserId(userId);
+        List<Veggie> veggieList = veggieRepository.findAllByUserId(userId);
 
         return veggieList.stream()
-                .filter(v -> v.getRegistration() == null)
+                .filter(v -> v.getRegistration() == null && v.getVeggieInfoId().equals(veggieInfoId))
                 .map(v -> GetRegistrationVeggieListResponseDto.of(
                         v.getId(),
                         v.getVeggieName(),
@@ -150,7 +151,7 @@ public class VeggieService {
 
         if (routine.getPeriod() != 0) {
             Routine newRoutine = createRoutine(
-                    LocalDate.now().plusDays(routine.getPeriod()).toString(),
+                    routine.getDate().plusDays(routine.getPeriod()).toString(),
                     routine.getContent(),
                     routine.getPeriod(),
                     routine.getVeggie()
@@ -277,7 +278,7 @@ public class VeggieService {
                 .map(r -> GetDayRoutinesDto.of(r.getId(), r.getContent(), r.getPeriod(), r.getIsDone()))
                 .collect(Collectors.toList());
 
-        return GetDayRoutinesResponseDto.of(veggie.getVeggieNickname(), veggie.getColor(),result);
+        return GetDayRoutinesResponseDto.of(veggie.getId(), veggie.getVeggieNickname(), veggie.getColor(),result);
     }
 
     public String getRandomColorCode() {

@@ -13,5 +13,6 @@ public class GetMyVeggieListDto {
 
     private String userNickname;
     private String level;
+    private String motivation;
     private List<GetVeggieInfoResponse> veggieList;
 }

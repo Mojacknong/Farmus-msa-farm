@@ -63,11 +63,12 @@ public class VeggieController {
         return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieList(userId));
     }
 
-    @GetMapping("/registration")
+    @GetMapping("/registration/{veggieInfoId}")
     public BaseResponseDto<?> getMyVeggieListForRegistration(
-            @RequestHeader("user") Long userId
+            @RequestHeader("user") Long userId,
+            @PathVariable String veggieInfoId
     ) {
-        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieListForRegistration(userId));
+        return BaseResponseDto.of(SuccessMessage.SUCCESS, veggieService.getMyVeggieListForRegistration(userId, veggieInfoId));
     }
 
     @GetMapping("/mission")
