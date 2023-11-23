@@ -151,7 +151,7 @@ public class VeggieService {
 
         if (routine.getPeriod() != 0) {
             Routine newRoutine = createRoutine(
-                    LocalDate.now().plusDays(routine.getPeriod()).toString(),
+                    routine.getDate().plusDays(routine.getPeriod()).toString(),
                     routine.getContent(),
                     routine.getPeriod(),
                     routine.getVeggie()
