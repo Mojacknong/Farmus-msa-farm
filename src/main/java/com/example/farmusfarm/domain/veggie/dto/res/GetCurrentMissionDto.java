@@ -14,4 +14,5 @@ public class GetCurrentMissionDto {
     private int stepNum;
     private String stepName;
     private String color;
+    private String detailId;
 }
