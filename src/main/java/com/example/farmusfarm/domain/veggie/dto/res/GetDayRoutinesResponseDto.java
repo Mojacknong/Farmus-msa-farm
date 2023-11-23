@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 public class GetDayRoutinesResponseDto {
 
+    private Long veggieId;
     private String veggieNickname;
     private String color;
     private List<GetDayRoutinesDto> routineList;

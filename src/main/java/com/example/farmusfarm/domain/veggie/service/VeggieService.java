@@ -278,7 +278,7 @@ public class VeggieService {
                 .map(r -> GetDayRoutinesDto.of(r.getId(), r.getContent(), r.getPeriod(), r.getIsDone()))
                 .collect(Collectors.toList());
 
-        return GetDayRoutinesResponseDto.of(veggie.getVeggieNickname(), veggie.getColor(),result);
+        return GetDayRoutinesResponseDto.of(veggie.getId(), veggie.getVeggieNickname(), veggie.getColor(),result);
     }
 
     public String getRandomColorCode() {
