@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class SearchChallengeResponseDto {
 
     private Long challengeId;
+    private String veggieInfoId;
     private String veggieName;
     private String challengeName;
     private String image;

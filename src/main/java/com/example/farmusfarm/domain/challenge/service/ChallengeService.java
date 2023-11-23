@@ -184,6 +184,7 @@ public class ChallengeService {
 
             return SearchChallengeResponseDto.of(
                     c.getId(),
+                    c.getVeggieInfoId(),
                     c.getVeggieName(),
                     c.getChallengeName(),
                     c.getImageUrl(),
