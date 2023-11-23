@@ -79,7 +79,7 @@ public class VeggieService {
                         Utils.compareLocalDate(LocalDate.now(), v.getBirth())))
                 .collect(Collectors.toList());
 
-        return GetMyVeggieListDto.of(response.getNickname(), response.getLevel(), result);
+        return GetMyVeggieListDto.of(response.getNickname(), response.getLevel(), response.getMotivation(), result);
     }
 
     public List<GetRegistrationVeggieListResponseDto> getMyVeggieListForRegistration(Long userId, String veggieInfoId) {

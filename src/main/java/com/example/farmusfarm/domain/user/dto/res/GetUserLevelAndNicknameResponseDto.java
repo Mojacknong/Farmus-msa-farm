@@ -11,4 +11,5 @@ public class GetUserLevelAndNicknameResponseDto {
 
     private String level;
     private String nickname;
+    private String motivation;
 }
